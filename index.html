@@ -3,61 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEHRUZJON OMMAVIY PLATFORMASI</title>
+    <title>ULUG' OMMAVIY TIZIMI</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow: hidden; }
-        .bg-animate { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
+        body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        .bg-animate { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
 
-        /* LOGIN */
+        /* LOGIN EKRANI */
         #login-screen { position: fixed; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 20px #00d2ff55; width: 350px; }
-        .login-box input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; font-family: 'Orbitron'; }
-        
-        /* PANEL */
-        #main-content { display: none; height: 100vh; justify-content: center; align-items: center; }
-        .panel { width: 450px; background: rgba(255,255,255,0.03); border: 2px solid #00d2ff; border-radius: 35px; padding: 30px; text-align: center; backdrop-filter: blur(10px); position: relative; }
-        
-        .creator-tag { font-family: 'Orbitron'; font-size: 10px; color: #00d2ff; margin-bottom: 10px; display: block; letter-spacing: 2px; }
-        h1 { font-family: 'Orbitron'; font-size: 22px; color: #fff; margin-bottom: 25px; letter-spacing: 2px; }
+        .login-box { background: rgba(255,255,255,0.03); padding: 50px; border-radius: 35px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 30px rgba(0, 210, 255, 0.3); width: 400px; }
+        .login-box input { width: 100%; padding: 16px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; font-family: 'Orbitron'; font-size: 14px; }
 
-        .category-title { color: #ffcc00; font-size: 12px; text-transform: uppercase; margin: 15px 0 10px; text-align: left; border-left: 3px solid #ffcc00; padding-left: 10px; font-weight: bold; }
+        /* ASOSIY PANEL - KATTALASHTIRILGAN */
+        #main-content { display: none; min-height: 100vh; justify-content: center; align-items: center; padding: 50px 20px; }
+        .panel { width: 100%; max-width: 650px; background: rgba(255,255,255,0.03); border: 2px solid rgba(0, 210, 255, 0.5); border-radius: 40px; padding: 40px; backdrop-filter: blur(15px); position: relative; box-shadow: 0 0 50px rgba(0, 210, 255, 0.2); }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 12px; text-decoration: none; font-size: 13px; transition: 0.3s; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: scale(1.03); }
+        .creator { font-family: 'Orbitron'; font-size: 11px; color: #00d2ff; text-align: center; display: block; margin-bottom: 12px; letter-spacing: 2px; }
+        h1 { font-family: 'Orbitron'; font-size: 26px; text-align: center; margin-bottom: 30px; letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px #00d2ff; }
+
+        .section-title { color: #ffcc00; font-size: 12px; text-transform: uppercase; margin: 25px 0 15px; border-left: 5px solid #ffcc00; padding-left: 15px; font-weight: bold; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 16px; border-radius: 18px; text-decoration: none; font-size: 14px; text-align: center; transition: 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 500; }
+        .btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0, 210, 255, 0.4); }
+        
         .btn-full { grid-column: span 2; }
-        .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border: none; font-weight: bold; }
+        .btn-main { background: rgba(0, 210, 255, 0.1); border-color: #00d2ff; }
+        
+        .insta { background: linear-gradient(45deg, #f09433, #bc1888); border: none; font-weight: bold; color: white !important; }
 
-        /* Emotsiyalar */
-        .emoji { font-size: 25px; position: absolute; opacity: 0.7; animation: float 6s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .action-btn { background: #00d2ff; color: #000; border: none; padding: 18px; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Orbitron'; text-transform: uppercase; font-size: 14px; }
 
-        .action-btn { background: #00d2ff; color: #000; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Orbitron'; }
+        /* ULUG' TERMINAL BO'LIMI */
+        .terminal-section { margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(0, 210, 255, 0.2); text-align: center; }
+        .terminal-label { font-family: 'Orbitron'; font-size: 12px; color: #00d2ff; margin-bottom: 15px; display: block; }
+        
+        #terminal-input { width: 100%; padding: 15px; background: #0a0a0a; border: 1px solid #333; color: #00d2ff; border-radius: 12px; text-align: center; font-family: 'Courier New', monospace; font-size: 16px; outline: none; margin-bottom: 15px; }
+        #terminal-input:focus { border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+
+        /* RASM OYNASI (MODAL) */
+        #image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(10px); animation: fadeIn 0.5s; }
+        #image-modal img { max-width: 90%; max-height: 90%; border-radius: 20px; border: 3px solid #00d2ff; box-shadow: 0 0 30px #00d2ff88; }
+        #image-modal .close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; font-family: Arial; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Suzuvchi emojilar */
+        .emoji-float { font-size: 24px; position: fixed; z-index: -1; opacity: 0.4; animation: float 12s infinite linear; pointer-events: none; }
+        @keyframes float { from { transform: translateY(100vh) rotate(0deg); } to { transform: translateY(-10vh) rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="bg-animate"></div>
+    
+    <div class="emoji-float" style="left: 10%; animation-delay: 0s;">💻</div>
+    <div class="emoji-float" style="left: 30%; animation-delay: 2s;">👑</div>
+    <div class="emoji-float" style="left: 70%; animation-delay: 4s;">🚀</div>
+    <div class="emoji-float" style="left: 90%; animation-delay: 6s;">✨</div>
 
     <div id="login-screen">
         <div class="login-box">
-            <h1 style="font-family:'Orbitron'; color:#00d2ff; font-size: 18px; margin-bottom: 10px;">BEHRUZJON 👑</h1>
-            <p style="font-size: 10px; color: #555;">OMMAVIY PLATFORMA</p>
-            <input type="password" id="pass-input" placeholder="PAROL">
+            <span class="creator">✨ YARATUVCHI: ULUG'BEK</span>
+            <h1 style="font-size: 18px;">ULUG' TIZIMI 👑</h1>
+            <p style="font-size: 11px; color: #555;">KIRISH UCHUN PAROLNI YOZING</p>
+            <input type="password" id="pass-input" placeholder="MAXFIY PAROL (Hypershot)">
             <button class="action-btn" onclick="checkPass()">KIRISH ✨</button>
         </div>
     </div>
 
     <div id="main-content">
         <div class="panel">
-            <div class="emoji" style="top: -30px; left: 20px;">🚀</div>
-            <div class="emoji" style="top: -30px; right: 20px;">🔥</div>
-            
-            <span class="creator-tag">✨ YARATUVCHI: JUMAQULOV BEHRUZ</span>
+            <span class="creator">🚀 YARATUVCHI: ULUG'BEK ZIYODULLAYEV</span>
             <h1>BOSHQA RUV PANELI 😎</h1>
 
-            <div class="category-title">🎮 QIZIQARLI O'YINLAR 🕹️</div>
+            <div class="section-title">🎮 QIZIQARLI O'YINLAR 🕹️</div>
             <div class="grid">
                 <a href="https://www.google.com/logos/2010/pacman10-i.html" target="_blank" class="btn">🟡 Pac-Man</a>
                 <a href="https://play2048.co/" target="_blank" class="btn">🔢 2048 O'yini</a>
@@ -65,42 +85,74 @@
                 <a href="https://tbot.xyz/lumber/" target="_blank" class="btn">🌲 LumberJack</a>
             </div>
 
-            <div class="category-title">🤖 SUN'IY INTELLEKT 🧠</div>
+            <div class="section-title">📚 O'QUV MARKAZI 👨‍💻</div>
+            <div class="grid">
+                <a href="https://python.sariq.dev" target="_blank" class="btn btn-full btn-main">🐍 Python Video Kurs</a>
+                <a href="https://youtube.com" target="_blank" class="btn">🎥 YouTube</a>
+                <a href="https://t.me/sariqdev" target="_blank" class="btn">✈️ Telegram Kanal</a>
+            </div>
+
+            <div class="section-title">🤖 SUN'IY INTELLEKT 🧠</div>
             <div class="grid">
                 <a href="https://chat.openai.com" target="_blank" class="btn">💬 ChatGPT</a>
-                <a href="https://www.midjourney.com" target="_blank" class="btn">🎨 Midjourney</a>
+                <a href="https://www.midjourney.com" target="_blank" class="btn">🎨 Midjourney AI</a>
             </div>
 
-            <div class="category-title">📚 DASTURLASH TILLARI 👨‍💻</div>
+            <div class="section-title">📸 ALOQA 📱</div>
             <div class="grid">
-                <a href="https://www.youtube.com/results?search_query=python+darslari+uzbek" target="_blank" class="btn btn-full">🐍 Python Video Kurs</a>
-                <a href="https://www.youtube.com/results?search_query=javascript+darslari+uzbek" target="_blank" class="btn">📜 JavaScript</a>
-                <a href="https://www.youtube.com/results?search_query=html+css+darslari+uzbek" target="_blank" class="btn">🌐 HTML/CSS</a>
+                <button onclick="insta()" class="btn btn-full insta">INSTAGRAM (_ulugbek_z) 📸</button>
             </div>
 
-            <div class="category-title">📸 ALOQA 📱</div>
-            <div class="grid">
-                <button onclick="insta()" class="btn btn-full insta-btn">INSTAGRAM (_behruz_real) 📸</button>
-                <a href="https://t.me/sariqdev" target="_blank" class="btn btn-full">✈️ Telegram Kanal</a>
+            <div class="terminal-section">
+                <span class="terminal-label">🖥️ ULUG' TERMINAL v1.0</span>
+                <input type="text" id="terminal-input" placeholder="BUYRUQNI YOZING (MASALAN: Ulug')">
+                <button class="action-btn" onclick="runCommand()">BUYRUQNI BAJARISH ⚙️</button>
             </div>
+
+            <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:#ff4444; cursor:pointer; font-size:12px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;">❌ TIZIMDAN CHIQISH</button>
         </div>
     </div>
 
+    <div id="image-modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img src="https://i.ibb.co/XW9pD9X/photo-2024-03-24-22-26-44.jpg" alt="Ulug'bek">
+    </div>
+
     <script>
+        // Parol: Hypershot
         function checkPass() {
             const p = document.getElementById('pass-input').value;
-            // Parol: Hypershot
             if(p === "Hypershot") { 
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'flex';
-            } else { 
-                alert("Parol noto'g'ri! ❌"); 
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'flex';
+                }, 500);
+            } else { alert("Xato parol! ❌"); }
+        }
+
+        // Terminal funksiyasi
+        function runCommand() {
+            const input = document.getElementById('terminal-input').value.trim();
+            const modal = document.getElementById('image-modal');
+            
+            // "Ulug'" buyrug'ini tekshirish (Katta-kichik harfga qaramaydi)
+            if (input.toLowerCase() === "ulug'") {
+                modal.style.display = "flex";
+                document.getElementById('terminal-input').value = ""; // Inputni tozalash
+            } else {
+                alert("Noma'lum buyruq! ❌. Buyruqni to'g'ri yozing (Masalan: Ulug')");
             }
         }
 
+        // Rasm oynasini yopish
+        function closeModal() {
+            document.getElementById('image-modal').style.display = "none";
+        }
+
         function insta() {
-            if(confirm("Diqqat! Avval _behruz_real ga follow bosing! ✨")) {
-                window.open('https://www.instagram.com/_behruz_real/', '_blank');
+            if(confirm("Diqqat! Avval profilingizga follow bosing! ✨")) {
+                window.open('https://www.instagram.com/_ulugbek_z/', '_blank');
             }
         }
     </script>
