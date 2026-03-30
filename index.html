@@ -3,30 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEHRUZJONNING TIZIMI</title>
+    <title>BEHRUZJONNING OMMAVIY TIZIMI</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow: hidden; }
         .bg-animate { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
         
-        /* LOGIN */
-        #login-screen { position: fixed; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 20px #00d2ff55; }
-        .login-box input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; }
-        
         /* ASOSIY TUZILMA */
-        #main-wrapper { display: none; width: 100vw; height: 100vh; grid-template-columns: 260px 1fr 310px; gap: 10px; padding: 10px; }
+        #main-wrapper { display: grid; width: 100vw; height: 100vh; grid-template-columns: 260px 1fr 310px; gap: 10px; padding: 10px; }
 
-        .sidebar { background: rgba(255,255,255,0.05); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; }
+        /* SIDEBAR */
+        .sidebar { background: rgba(255,255,255,0.05); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
         .menu-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 13px; transition: 0.3s; }
-        .menu-btn:hover { background: #00d2ff; color: #000; font-weight: bold; }
+        .menu-btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: translateX(5px); }
         .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border: none; font-weight: bold; color: #fff !important; }
 
-        .viewer-container { background: #fff; border-radius: 20px; overflow: hidden; position: relative; border: 2px solid #222; }
+        /* CENTER VIEWER */
+        .viewer-container { background: #fff; border-radius: 20px; overflow: hidden; position: relative; border: 2px solid #222; box-shadow: 0 0 30px rgba(0,210,255,0.1); }
         #content-frame { width: 100%; height: 100%; border: none; }
 
-        /* TARONA AI */
+        /* TARONA AI SIDEBAR */
         .ai-sidebar { background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid #00d2ff; padding: 15px; display: flex; flex-direction: column; }
         .ai-header { font-family: 'Orbitron'; font-size: 14px; color: #00d2ff; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #00d2ff; padding-bottom: 10px; }
         
@@ -34,107 +31,3 @@
         #ai-chat { display: none; flex: 1; flex-direction: column; }
         
         .chat-area { flex: 1; overflow-y: auto; margin-bottom: 10px; padding: 5px; font-size: 13px; }
-        .msg-t { color: #00d2ff; margin-bottom: 10px; background: rgba(0,210,255,0.08); padding: 10px; border-radius: 10px; border-left: 3px solid #00d2ff; }
-        .msg-u { color: #fff; text-align: right; margin-bottom: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
-
-        .action-btn { background: #00d2ff; color: #000; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; }
-        .top-info { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #00d2ff; font-family: 'Orbitron'; z-index: 5; letter-spacing: 1px; }
-    </style>
-</head>
-<body>
-    <div class="bg-animate"></div>
-    <div class="top-info">👑 BEHRUZJONNING MAXFIY TIZIMI</div>
-
-    <div id="login-screen">
-        <div class="login-box">
-            <h1 style="font-family:'Orbitron'; color:#00d2ff; margin-bottom: 5px;">BEHRUZJONNING</h1>
-            <p style="font-size: 12px; letter-spacing: 2px; color: #555; margin-bottom: 20px;">SHAXSIY TIZIMI</p>
-            <input type="text" id="main-pass" placeholder="PAROL (Hypershot)">
-            <button class="action-btn" onclick="unlockSystem()">KIRISH</button>
-        </div>
-    </div>
-
-    <div id="main-wrapper">
-        <div class="sidebar">
-            <h3 style="color:#ffcc00; margin-bottom:15px; font-size:14px; text-transform: uppercase;">Bo'limlar</h3>
-            <button class="menu-btn" onclick="openPage('https://python.sariq.dev')">🐍 Python Kursi</button>
-            <button class="menu-btn" onclick="openPage('https://play2048.co/')">🔢 2048 O'yini</button>
-            <button class="menu-btn" onclick="openPage('https://www.google.com/logos/2010/pacman10-i.html')">🟡 Pac-Man O'yini</button>
-            
-            <h3 style="color:#ffcc00; margin: 20px 0 10px; font-size:14px; text-transform: uppercase;">Ijtimoiy</h3>
-            <button class="menu-btn insta-btn" onclick="instaFollow()">📸 Instagram</button>
-            <button class="menu-btn" onclick="openPage('https://t.me/sariqdev')">✈️ Telegram Kanal</button>
-            
-            <div style="flex:1"></div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer; font-size:11px; font-weight: bold;">🔴 TIZIMDAN CHIQISH</button>
-        </div>
-
-        <div class="viewer-container">
-            <iframe id="content-frame" src="https://python.sariq.dev"></iframe>
-        </div>
-
-        <div class="ai-sidebar">
-            <div class="ai-header">TARONA AI</div>
-            <div id="ai-lock">
-                <p style="font-size:10px; color: #888; margin-bottom:10px">KIRISH KODI: 0001</p>
-                <input type="text" id="ai-code" placeholder="PIN KOD" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; text-align:center;">
-                <button class="action-btn" onclick="unlockAI()">OCHISH</button>
-            </div>
-            <div id="ai-chat">
-                <div class="chat-area" id="chatBox">
-                    <div class="msg-t"><b>Tarona:</b> Salom Behruzjon! Bu sizning shaxsiy Taronangiz. Qanday yordam bera olaman?</div>
-                </div>
-                <input type="text" id="ai-msg-input" placeholder="Savol yozing..." style="width:100%; padding:10px; background:#000; border:1px solid #00d2ff; color:#fff; border-radius:8px; outline: none;">
-                <button class="action-btn" style="margin-top:8px; font-size: 12px;" onclick="askAI()">SAVOL YUBORISH</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function unlockSystem() {
-            const pass = document.getElementById('main-pass').value;
-            if(pass === "Hypershot") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-wrapper').style.display = 'grid';
-            } else { alert("Xato! Faqat Behruzjon kira oladi."); }
-        }
-
-        function openPage(url) {
-            document.getElementById('content-frame').src = url;
-        }
-
-        function instaFollow() {
-            // Instagramga kirishdan oldin ogohlantirish
-            if(confirm("Avval _behruz_real ga follow bosing! Shundan so'ng profilingiz ochiladi. Rozimisiz?")) {
-                openPage('https://www.instagram.com/_behruz_real/');
-            }
-        }
-
-        function unlockAI() {
-            const code = document.getElementById('ai-code').value;
-            if(code === "0001") {
-                document.getElementById('ai-lock').style.display = 'none';
-                document.getElementById('ai-chat').style.display = 'flex';
-            } else { alert("AI terminali kodi xato!"); }
-        }
-
-        function askAI() {
-            let inp = document.getElementById('ai-msg-input');
-            let box = document.getElementById('chatBox');
-            if(!inp.value.trim()) return;
-            
-            box.innerHTML += `<div class="msg-u"><b>Siz:</b> ${inp.value}</div>`;
-            
-            setTimeout(() => {
-                let reply = "Tushundim, Behruzjon. Men bu borada ma'lumot qidiryapman...";
-                if(inp.value.toLowerCase().includes("salom")) reply = "Assalomu alaykum! Men Behruzjonning shaxsiy yordamchisi Tarona AI man.";
-                if(inp.value.toLowerCase().includes("kim")) reply = "Men Tarona AI loyihasiman, Behruzjon tomonidan yaratilganman.";
-                
-                box.innerHTML += `<div class="msg-t"><b>Tarona:</b> ${reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-                inp.value = "";
-            }, 700);
-        }
-    </script>
-</body>
-</html>
