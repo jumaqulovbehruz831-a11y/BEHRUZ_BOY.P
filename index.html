@@ -3,157 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULUG' OMMAVIY TIZIMI</title>
+    <title>BEHRUZJON PREMIUM PLATFORMA</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
-        .bg-animate { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
+        body { min-height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; padding: 40px 0; }
+        .bg-animate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001a33 0%, #000 100%); z-index: -1; }
 
-        /* LOGIN EKRANI */
-        #login-screen { position: fixed; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: rgba(255,255,255,0.03); padding: 50px; border-radius: 35px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 30px rgba(0, 210, 255, 0.3); width: 400px; }
-        .login-box input { width: 100%; padding: 16px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; font-family: 'Orbitron'; font-size: 14px; }
+        /* LOGIN */
+        #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
+        .login-box { background: rgba(255,255,255,0.02); padding: 50px; border-radius: 40px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); width: 400px; }
+        .login-box input { width: 100%; padding: 18px; margin: 25px 0; border-radius: 15px; border: 1px solid #333; background: #0a0a0a; color: #fff; text-align: center; outline: none; font-family: 'Orbitron'; letter-spacing: 2px; }
 
-        /* ASOSIY PANEL - KATTALASHTIRILGAN */
-        #main-content { display: none; min-height: 100vh; justify-content: center; align-items: center; padding: 50px 20px; }
-        .panel { width: 100%; max-width: 650px; background: rgba(255,255,255,0.03); border: 2px solid rgba(0, 210, 255, 0.5); border-radius: 40px; padding: 40px; backdrop-filter: blur(15px); position: relative; box-shadow: 0 0 50px rgba(0, 210, 255, 0.2); }
-
-        .creator { font-family: 'Orbitron'; font-size: 11px; color: #00d2ff; text-align: center; display: block; margin-bottom: 12px; letter-spacing: 2px; }
-        h1 { font-family: 'Orbitron'; font-size: 26px; text-align: center; margin-bottom: 30px; letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 10px #00d2ff; }
-
-        .section-title { color: #ffcc00; font-size: 12px; text-transform: uppercase; margin: 25px 0 15px; border-left: 5px solid #ffcc00; padding-left: 15px; font-weight: bold; }
+        /* MAIN PANEL - KATTA VA IDEAL */
+        #main-content { display: none; width: 95%; max-width: 850px; animation: fadeIn 0.8s ease; }
+        .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 210, 255, 0.4); border-radius: 50px; padding: 50px; backdrop-filter: blur(20px); box-shadow: 0 20px 80px rgba(0,0,0,0.5); position: relative; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 16px; border-radius: 18px; text-decoration: none; font-size: 14px; text-align: center; transition: 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 500; }
-        .btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0, 210, 255, 0.4); }
-        
+        .creator-info { font-family: 'Orbitron'; font-size: 12px; color: #00d2ff; text-align: center; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; }
+        h1 { font-family: 'Orbitron'; font-size: 32px; text-align: center; margin-bottom: 40px; letter-spacing: 5px; text-shadow: 0 0 15px #00d2ff; }
+
+        .section-title { color: #ffcc00; font-size: 13px; text-transform: uppercase; margin: 35px 0 20px; display: flex; align-items: center; gap: 15px; font-weight: 600; letter-spacing: 1px; }
+        .section-title::after { content: ""; height: 1px; flex: 1; background: linear-gradient(90deg, rgba(255,204,0,0.5), transparent); }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 20px; border-radius: 22px; text-decoration: none; font-size: 14px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4); }
         .btn-full { grid-column: span 2; }
-        .btn-main { background: rgba(0, 210, 255, 0.1); border-color: #00d2ff; }
+        .insta { background: linear-gradient(45deg, #f09433, #bc1888); border: none; }
+
+        /* KOD YOZISH JOYI (TERMINAL) */
+        .terminal-box { margin-top: 40px; background: #050505; border: 1px solid #1a1a1a; border-radius: 25px; padding: 25px; text-align: center; }
+        .terminal-box input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #00d2ff; color: #00d2ff; padding: 15px; font-family: 'Courier New', monospace; font-size: 18px; text-align: center; outline: none; margin-bottom: 20px; }
         
-        .insta { background: linear-gradient(45deg, #f09433, #bc1888); border: none; font-weight: bold; color: white !important; }
+        /* RASM CHIQADIGAN JOY */
+        #photo-result { display: none; margin-top: 20px; text-align: center; animation: zoomIn 0.5s ease; }
+        #photo-result img { width: 250px; border-radius: 25px; border: 3px solid #00d2ff; box-shadow: 0 0 30px rgba(0, 210, 255, 0.5); }
 
-        .action-btn { background: #00d2ff; color: #000; border: none; padding: 18px; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Orbitron'; text-transform: uppercase; font-size: 14px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* ULUG' TERMINAL BO'LIMI */
-        .terminal-section { margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(0, 210, 255, 0.2); text-align: center; }
-        .terminal-label { font-family: 'Orbitron'; font-size: 12px; color: #00d2ff; margin-bottom: 15px; display: block; }
-        
-        #terminal-input { width: 100%; padding: 15px; background: #0a0a0a; border: 1px solid #333; color: #00d2ff; border-radius: 12px; text-align: center; font-family: 'Courier New', monospace; font-size: 16px; outline: none; margin-bottom: 15px; }
-        #terminal-input:focus { border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
-
-        /* RASM OYNASI (MODAL) */
-        #image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(10px); animation: fadeIn 0.5s; }
-        #image-modal img { max-width: 90%; max-height: 90%; border-radius: 20px; border: 3px solid #00d2ff; box-shadow: 0 0 30px #00d2ff88; }
-        #image-modal .close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; font-family: Arial; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Suzuvchi emojilar */
-        .emoji-float { font-size: 24px; position: fixed; z-index: -1; opacity: 0.4; animation: float 12s infinite linear; pointer-events: none; }
-        @keyframes float { from { transform: translateY(100vh) rotate(0deg); } to { transform: translateY(-10vh) rotate(360deg); } }
+        .action-btn { background: #00d2ff; color: #000; border: none; padding: 20px; border-radius: 18px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Orbitron'; transition: 0.3s; }
+        .action-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
     <div class="bg-animate"></div>
-    
-    <div class="emoji-float" style="left: 10%; animation-delay: 0s;">💻</div>
-    <div class="emoji-float" style="left: 30%; animation-delay: 2s;">👑</div>
-    <div class="emoji-float" style="left: 70%; animation-delay: 4s;">🚀</div>
-    <div class="emoji-float" style="left: 90%; animation-delay: 6s;">✨</div>
 
     <div id="login-screen">
         <div class="login-box">
-            <span class="creator">✨ YARATUVCHI: ULUG'BEK</span>
-            <h1 style="font-size: 18px;">ULUG' TIZIMI 👑</h1>
-            <p style="font-size: 11px; color: #555;">KIRISH UCHUN PAROLNI YOZING</p>
-            <input type="password" id="pass-input" placeholder="MAXFIY PAROL (Hypershot)">
-            <button class="action-btn" onclick="checkPass()">KIRISH ✨</button>
+            <h1 style="font-size: 20px; margin-bottom: 0;">BEHRUZJON 👑</h1>
+            <input type="password" id="pass-input" placeholder="PAROL">
+            <button class="action-btn" onclick="checkPass()">TIZIMGA KIRISH</button>
         </div>
     </div>
 
     <div id="main-content">
         <div class="panel">
-            <span class="creator">🚀 YARATUVCHI: ULUG'BEK ZIYODULLAYEV</span>
+            <div class="creator-info">Jumaqulov Behruz Xurshidjonovich</div>
             <h1>BOSHQA RUV PANELI 😎</h1>
 
-            <div class="section-title">🎮 QIZIQARLI O'YINLAR 🕹️</div>
+            <div class="section-title">🎮 O'YINLAR VA ENTERTAINMENT</div>
             <div class="grid">
-                <a href="https://www.google.com/logos/2010/pacman10-i.html" target="_blank" class="btn">🟡 Pac-Man</a>
-                <a href="https://play2048.co/" target="_blank" class="btn">🔢 2048 O'yini</a>
-                <a href="https://mrdoob.com/projects/chromeexperiments/google-gravity/" target="_blank" class="btn">🌌 Google Gravity</a>
+                <a href="https://www.google.com/logos/2010/pacman10-i.html" target="_blank" class="btn">🟡 Pac-Man Classic</a>
+                <a href="https://play2048.co/" target="_blank" class="btn">🔢 2048 Strategy</a>
                 <a href="https://tbot.xyz/lumber/" target="_blank" class="btn">🌲 LumberJack</a>
+                <a href="https://mrdoob.com/projects/chromeexperiments/google-gravity/" target="_blank" class="btn">🌌 Google Gravity</a>
             </div>
 
-            <div class="section-title">📚 O'QUV MARKAZI 👨‍💻</div>
+            <div class="section-title">🤖 SUN'IY INTELLEKT TEXNOLOGIYALARI</div>
             <div class="grid">
-                <a href="https://python.sariq.dev" target="_blank" class="btn btn-full btn-main">🐍 Python Video Kurs</a>
-                <a href="https://youtube.com" target="_blank" class="btn">🎥 YouTube</a>
-                <a href="https://t.me/sariqdev" target="_blank" class="btn">✈️ Telegram Kanal</a>
-            </div>
-
-            <div class="section-title">🤖 SUN'IY INTELLEKT 🧠</div>
-            <div class="grid">
-                <a href="https://chat.openai.com" target="_blank" class="btn">💬 ChatGPT</a>
+                <a href="https://chat.openai.com" target="_blank" class="btn">💬 ChatGPT 4o</a>
                 <a href="https://www.midjourney.com" target="_blank" class="btn">🎨 Midjourney AI</a>
             </div>
 
-            <div class="section-title">📸 ALOQA 📱</div>
+            <div class="section-title">👨‍💻 DASTURLASH VA TA'LIM</div>
             <div class="grid">
-                <button onclick="insta()" class="btn btn-full insta">INSTAGRAM (_ulugbek_z) 📸</button>
+                <a href="https://python.sariq.dev" target="_blank" class="btn btn-full">🐍 Professional Python Kurslari</a>
+                <a href="https://replit.com" target="_blank" class="btn">💻 Onlayn IDE</a>
+                <a href="https://youtube.com" target="_blank" class="btn">🎥 Educational Content</a>
             </div>
 
-            <div class="terminal-section">
-                <span class="terminal-label">🖥️ ULUG' TERMINAL v1.0</span>
-                <input type="text" id="terminal-input" placeholder="BUYRUQNI YOZING (MASALAN: Ulug')">
-                <button class="action-btn" onclick="runCommand()">BUYRUQNI BAJARISH ⚙️</button>
+            <div class="section-title">📸 IJTIMOIY ALOQA</div>
+            <div class="grid">
+                <button onclick="insta()" class="btn btn-full insta">INSTAGRAM (_behruz_real) 📸</button>
             </div>
 
-            <button onclick="location.reload()" style="margin-top:30px; background:none; border:none; color:#ff4444; cursor:pointer; font-size:12px; font-weight:bold; letter-spacing:1px; text-transform:uppercase;">❌ TIZIMDAN CHIQISH</button>
+            <div class="section-title">⌨️ MAXSUS BUYRUQLAR TERMINALI</div>
+            <div class="terminal-box">
+                <input type="text" id="cmd-input" placeholder="KODNI YOZING...">
+                <button class="action-btn" style="width: auto; padding: 15px 40px;" onclick="runCmd()">RUN CODE</button>
+                
+                <div id="photo-result">
+                    <p style="color: #00d2ff; margin-bottom: 15px; font-family: 'Orbitron'; font-size: 12px;">FOYDALANUVCHI ANIQLANDI: BEHRUZ</p>
+                    <img src="https://i.ibb.co/XW9pD9X/photo-2024-03-24-22-26-44.jpg" alt="Behruz">
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 40px; font-size: 10px; color: #333; letter-spacing: 2px;">PREMIUM EDITION v2.0</p>
         </div>
     </div>
 
-    <div id="image-modal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <img src="https://i.ibb.co/XW9pD9X/photo-2024-03-24-22-26-44.jpg" alt="Ulug'bek">
-    </div>
-
     <script>
-        // Parol: Hypershot
         function checkPass() {
             const p = document.getElementById('pass-input').value;
             if(p === "Hypershot") { 
                 document.getElementById('login-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'flex';
+                    document.getElementById('main-content').style.display = 'block';
                 }, 500);
-            } else { alert("Xato parol! ❌"); }
+            } else { alert("Parol xato!"); }
         }
 
-        // Terminal funksiyasi
-        function runCommand() {
-            const input = document.getElementById('terminal-input').value.trim();
-            const modal = document.getElementById('image-modal');
-            
-            // "Ulug'" buyrug'ini tekshirish (Katta-kichik harfga qaramaydi)
-            if (input.toLowerCase() === "ulug'") {
-                modal.style.display = "flex";
-                document.getElementById('terminal-input').value = ""; // Inputni tozalash
+        function runCmd() {
+            const cmd = document.getElementById('cmd-input').value.trim();
+            const res = document.getElementById('photo-result');
+            if(cmd.toLowerCase() === "ulug'") {
+                res.style.display = "block";
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             } else {
-                alert("Noma'lum buyruq! ❌. Buyruqni to'g'ri yozing (Masalan: Ulug')");
+                alert("Noma'lum kod!");
+                res.style.display = "none";
             }
-        }
-
-        // Rasm oynasini yopish
-        function closeModal() {
-            document.getElementById('image-modal').style.display = "none";
         }
 
         function insta() {
-            if(confirm("Diqqat! Avval profilingizga follow bosing! ✨")) {
-                window.open('https://www.instagram.com/_ulugbek_z/', '_blank');
-            }
+            window.open('https://www.instagram.com/_behruz_real/', '_blank');
         }
     </script>
 </body>
