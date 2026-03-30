@@ -3,36 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEKHA PLATFORM | Coding Academy</title>
+    <title>BEKHA PLATFORM | Created by Behruz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: #000; color: white; overflow: hidden; }
-        .bg-glow { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000 90%); z-index: -1; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); padding: 35px; border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-        
-        h1 { font-size: 30px; letter-spacing: 4px; margin-bottom: 25px; color: #fff; text-shadow: 0 0 10px rgba(0,116,217,0.5); }
-        input { width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; text-align: center; font-size: 16px; margin-bottom: 15px; outline: none; }
-        .btn { width: 100%; padding: 15px; background: #0074D9; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn:hover { background: #fff; color: #000; }
-        
-        .forgot { margin-top: 15px; font-size: 12px; color: #444; cursor: pointer; display: block; }
-        
-        #apps { display: none; max-height: 85vh; overflow-y: auto; padding-right: 5px; }
-        #apps::-webkit-scrollbar { width: 5px; }
-        #apps::-webkit-scrollbar-thumb { background: #0074D9; border-radius: 10px; }
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            color: white;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
 
-        .section-title { font-size: 13px; color: #00d2ff; text-align: left; margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        /* Tepadagi muallif yozuvi uchun maxsus stil */
+        .creator-header {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .creator-header h2 {
+            font-family: 'Orbitron', sans-serif; /* Futuristik shrift */
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px #00d2ff, 0 0 20px #00d2ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        /* Emojilar foni */
+        .emoji-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .emoji {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: fall infinite linear;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Karta stili */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            padding: 35px;
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            width: 380px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            z-index: 1;
+        }
+
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; margin-bottom: 25px; color: #00d2ff; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .link { padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .link:hover { background: rgba(0,116,217,0.15); border-color: #00d2ff; transform: translateY(-3px); }
-        .icon { font-size: 20px; }
-        .full { grid-column: span 2; }
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(0,210,255,0.4); }
+        
+        .forgot { margin-top: 15px; font-size: 12px; color: #555; cursor: pointer; display: block; }
+
+        #apps { display: none; max-height: 70vh; overflow-y: auto; }
+        
+        .section-title { font-size: 12px; color: #ffcc00; text-align: left; margin: 15px 0 10px; text-transform: uppercase; border-left: 3px solid #ffcc00; padding-left: 10px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .link { padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; color: white; text-decoration: none; font-size: 13px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .link:hover { background: rgba(255, 204, 0, 0.1); border-color: #ffcc00; }
     </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
+
+    <div class="creator-header">
+        <h2>✨ YARATUVCHI: JUMAQULOV BEHRUZ 👑</h2>
+    </div>
+
+    <div class="emoji-background" id="emojiBG"></div>
 
     <div id="login" class="card">
         <h1>BEKHA</h1>
@@ -44,23 +142,11 @@
     <div id="apps" class="card">
         <h1>PLATFORMA</h1>
         
-        <div class="section-title">💻 Dasturlash darslari</div>
+        <div class="section-title">🐍 Sariq Dev - Python</div>
         <div class="grid">
-            <a href="https://replit.com" target="_blank" class="link">
-                <span class="icon">🐍</span> Python Online
-            </a>
-            <a href="https://www.w3schools.com" target="_blank" class="link">
-                <span class="icon">🌐</span> W3Schools
-            </a>
-            <a href="https://mohirdev.uz" target="_blank" class="link">
-                <span class="icon">🎓</span> Mohirdev (UZ)
-            </a>
-            <a href="https://pdp.uz" target="_blank" class="link">
-                <span class="icon">🚀</span> PDP Online
-            </a>
-            <a href="https://www.sololearn.com" target="_blank" class="link full">
-                <span class="icon">📱</span> SoloLearn (Boshlovchilar uchun)
-            </a>
+            <a href="https://python.sariq.dev" target="_blank" class="link" style="grid-column: span 2;">📖 Python Kitob</a>
+            <a href="https://www.youtube.com/@sariqdev" target="_blank" class="link">🎥 YouTube</a>
+            <a href="https://t.me/sariqdev" target="_blank" class="link">✈️ Telegram</a>
         </div>
 
         <div class="section-title">🔗 Ijtimoiy Tarmoqlar</div>
@@ -69,25 +155,34 @@
             <a href="https://youtube.com" target="_blank" class="link">YouTube</a>
         </div>
 
-        <button onclick="location.reload()" style="margin-top:30px; background:none; color:#ff4136; border:none; cursor:pointer; font-size:11px; letter-spacing: 2px;">TIZIMDAN CHIQISH</button>
+        <button onclick="location.reload()" style="margin-top:20px; background:none; color:red; border:none; cursor:pointer; font-size:10px;">CHIQISH</button>
     </div>
 
     <script>
         function check() {
-            const val = document.getElementById('passInput').value;
-            if(val === "Hypershot") { openPlatform(); } 
-            else { alert("Xato parol!"); }
+            if(document.getElementById('passInput').value === "Hypershot") { openPlatform(); } 
+            else { alert("Xato!"); }
         }
 
         function secretEntry() {
-            let secret = prompt("Maxfiy so'zni kiriting:");
-            if(secret === "Behruzjon") { openPlatform(); } 
-            else { alert("Maxfiy so'z noto'g'ri!"); }
+            if(prompt("Maxfiy so'z?") === "Behruzjon") { openPlatform(); }
         }
 
         function openPlatform() {
             document.getElementById('login').style.display = 'none';
             document.getElementById('apps').style.display = 'block';
+        }
+
+        const emojis = ['💻', '🐍', '⚡', '🔥', '🚀', '💎', '🤴', '✨'];
+        const container = document.getElementById('emojiBG');
+        for (let i = 0; i < 20; i++) {
+            const emoji = document.createElement('div');
+            emoji.className = 'emoji';
+            emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = Math.random() * 100 + 'vw';
+            emoji.style.animationDuration = Math.random() * 3 + 2 + 's';
+            emoji.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(emoji);
         }
     </script>
 </body>
