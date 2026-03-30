@@ -3,137 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEHRUZJONNING TIZIMI</title>
+    <title>BEHRUZJON OMMAVIY PLATFORMASI</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow: hidden; }
-        .bg-animate { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
-        
-        /* LOGIN */
-        #login-screen { position: fixed; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 20px #00d2ff55; }
-        .login-box input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; }
-        
-        /* ASOSIY TUZILMA */
-        #main-wrapper { display: none; width: 100vw; height: 100vh; grid-template-columns: 260px 1fr 310px; gap: 10px; padding: 10px; }
+        body { height: 100vh; background: #000; color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        .bg-animate { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle, #001a33 0%, #000 100%); z-index: -1; }
 
-        .sidebar { background: rgba(255,255,255,0.05); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; display: flex; flex-direction: column; }
-        .menu-btn { width: 100%; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 13px; transition: 0.3s; }
-        .menu-btn:hover { background: #00d2ff; color: #000; font-weight: bold; }
-        .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border: none; font-weight: bold; color: #fff !important; }
+        /* LOGIN EKRANI */
+        #login-screen { position: fixed; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
+        .login-box { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; border: 2px solid #00d2ff; text-align: center; box-shadow: 0 0 30px rgba(0, 210, 255, 0.3); width: 350px; }
+        .login-box input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; outline: none; font-family: 'Orbitron'; }
 
-        .viewer-container { background: #fff; border-radius: 20px; overflow: hidden; position: relative; border: 2px solid #222; }
-        #content-frame { width: 100%; height: 100%; border: none; }
+        /* ASOSIY PANEL */
+        #main-content { display: none; min-height: 100vh; justify-content: center; align-items: center; padding: 40px 20px; }
+        .panel { width: 100%; max-width: 550px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 210, 255, 0.5); border-radius: 35px; padding: 30px; backdrop-filter: blur(15px); }
 
-        /* TARONA AI */
-        .ai-sidebar { background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid #00d2ff; padding: 15px; display: flex; flex-direction: column; }
-        .ai-header { font-family: 'Orbitron'; font-size: 14px; color: #00d2ff; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #00d2ff; padding-bottom: 10px; }
+        .creator { font-family: 'Orbitron'; font-size: 10px; color: #00d2ff; text-align: center; display: block; margin-bottom: 10px; letter-spacing: 2px; }
+        h1 { font-family: 'Orbitron'; font-size: 20px; text-align: center; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; }
+
+        .section-title { color: #ffcc00; font-size: 11px; text-transform: uppercase; margin: 20px 0 12px; border-left: 4px solid #ffcc00; padding-left: 12px; font-weight: bold; }
         
-        #ai-lock { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #ai-chat { display: none; flex: 1; flex-direction: column; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 14px; border-radius: 15px; text-decoration: none; font-size: 13px; text-align: center; transition: 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn:hover { background: #00d2ff; color: #000; font-weight: bold; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3); }
         
-        .chat-area { flex: 1; overflow-y: auto; margin-bottom: 10px; padding: 5px; font-size: 13px; }
-        .msg-t { color: #00d2ff; margin-bottom: 10px; background: rgba(0,210,255,0.08); padding: 10px; border-radius: 10px; border-left: 3px solid #00d2ff; }
-        .msg-u { color: #fff; text-align: right; margin-bottom: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
+        .btn-full { grid-column: span 2; }
+        .btn-study { background: rgba(0, 210, 255, 0.1); border-color: #00d2ff; font-weight: 600; }
+        
+        .insta { background: linear-gradient(45deg, #f09433, #bc1888); border: none; font-weight: bold; color: white !important; }
 
-        .action-btn { background: #00d2ff; color: #000; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; }
-        .top-info { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #00d2ff; font-family: 'Orbitron'; z-index: 5; letter-spacing: 1px; }
+        .action-btn { background: #00d2ff; color: #000; border: none; padding: 16px; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Orbitron'; text-transform: uppercase; }
+
+        /* TILLAR RO'YXATI */
+        #lang-list { display: none; margin-top: 15px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* EMOTSIYA (Emoji effektlari) */
+        .emoji-float { font-size: 20px; position: fixed; z-index: -1; opacity: 0.3; animation: float 10s infinite linear; }
+        @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
     </style>
 </head>
 <body>
     <div class="bg-animate"></div>
-    <div class="top-info">👑 BEHRUZJONNING MAXFIY TIZIMI</div>
+    
+    <div class="emoji-float" style="left: 10%; animation-delay: 0s;">💻</div>
+    <div class="emoji-float" style="left: 30%; animation-delay: 2s;">🔥</div>
+    <div class="emoji-float" style="left: 70%; animation-delay: 4s;">🚀</div>
+    <div class="emoji-float" style="left: 90%; animation-delay: 6s;">✨</div>
 
     <div id="login-screen">
         <div class="login-box">
-            <h1 style="font-family:'Orbitron'; color:#00d2ff; margin-bottom: 5px;">BEHRUZJONNING</h1>
-            <p style="font-size: 12px; letter-spacing: 2px; color: #555; margin-bottom: 20px;">SHAXSIY TIZIMI</p>
-            <input type="text" id="main-pass" placeholder="PAROL (Hypershot)">
-            <button class="action-btn" onclick="unlockSystem()">KIRISH</button>
+            <span class="creator">✨ YARATUVCHI: BEHRUZ</span>
+            <h1 style="font-size: 15px;">PLATFORMAGA KIRISH 🔑</h1>
+            <input type="password" id="pass-input" placeholder="MAXFIY PAROL">
+            <button class="action-btn" onclick="checkPass()">KIRISH ✨</button>
         </div>
     </div>
 
-    <div id="main-wrapper">
-        <div class="sidebar">
-            <h3 style="color:#ffcc00; margin-bottom:15px; font-size:14px; text-transform: uppercase;">Bo'limlar</h3>
-            <button class="menu-btn" onclick="openPage('https://python.sariq.dev')">🐍 Python Kursi</button>
-            <button class="menu-btn" onclick="openPage('https://play2048.co/')">🔢 2048 O'yini</button>
-            <button class="menu-btn" onclick="openPage('https://www.google.com/logos/2010/pacman10-i.html')">🟡 Pac-Man O'yini</button>
-            
-            <h3 style="color:#ffcc00; margin: 20px 0 10px; font-size:14px; text-transform: uppercase;">Ijtimoiy</h3>
-            <button class="menu-btn insta-btn" onclick="instaFollow()">📸 Instagram</button>
-            <button class="menu-btn" onclick="openPage('https://t.me/sariqdev')">✈️ Telegram Kanal</button>
-            
-            <div style="flex:1"></div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer; font-size:11px; font-weight: bold;">🔴 TIZIMDAN CHIQISH</button>
-        </div>
+    <div id="main-content">
+        <div class="panel">
+            <span class="creator">🚀 YARATUVCHI: JUMAQULOV BEHRUZ</span>
+            <h1>BOSHQA RUV PANELI 😎</h1>
 
-        <div class="viewer-container">
-            <iframe id="content-frame" src="https://python.sariq.dev"></iframe>
-        </div>
-
-        <div class="ai-sidebar">
-            <div class="ai-header">TARONA AI</div>
-            <div id="ai-lock">
-                <p style="font-size:10px; color: #888; margin-bottom:10px">KIRISH KODI: 0001</p>
-                <input type="text" id="ai-code" placeholder="PIN KOD" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; text-align:center;">
-                <button class="action-btn" onclick="unlockAI()">OCHISH</button>
-            </div>
-            <div id="ai-chat">
-                <div class="chat-area" id="chatBox">
-                    <div class="msg-t"><b>Tarona:</b> Salom Behruzjon! Bu sizning shaxsiy Taronangiz. Qanday yordam bera olaman?</div>
+            <div class="section-title">📚 O'QUV MARKAZI 👨‍💻</div>
+            <div class="grid">
+                <div class="btn btn-full btn-study" onclick="toggleLangs()">💻 DASTURLASH TILLARINI O'RGANISH</div>
+                
+                <div id="lang-list" class="grid btn-full">
+                    <a href="https://www.youtube.com/results?search_query=python+darslari+o%27zbekcha" target="_blank" class="btn">🐍 Python Video</a>
+                    <a href="https://www.youtube.com/results?search_query=javascript+darslari+o%27zbekcha" target="_blank" class="btn">📜 JavaScript Video</a>
+                    <a href="https://www.youtube.com/results?search_query=html+css+darslari+o%27zbekcha" target="_blank" class="btn">🌐 HTML/CSS Video</a>
+                    <a href="https://www.youtube.com/results?search_query=java+darslari+o%27zbekcha" target="_blank" class="btn">☕ Java Video</a>
                 </div>
-                <input type="text" id="ai-msg-input" placeholder="Savol yozing..." style="width:100%; padding:10px; background:#000; border:1px solid #00d2ff; color:#fff; border-radius:8px; outline: none;">
-                <button class="action-btn" style="margin-top:8px; font-size: 12px;" onclick="askAI()">SAVOL YUBORISH</button>
+            </div>
+
+            <div class="section-title">🎮 QIZIQARLI O'YINLAR 🕹️</div>
+            <div class="grid">
+                <a href="https://www.google.com/logos/2010/pacman10-i.html" target="_blank" class="btn">🟡 Pac-Man</a>
+                <a href="https://play2048.co/" target="_blank" class="btn">🔢 2048 O'yini</a>
+                <a href="https://mrdoob.com/projects/chromeexperiments/google-gravity/" target="_blank" class="btn">🌌 Google Gravity</a>
+                <a href="https://tbot.xyz/lumber/" target="_blank" class="btn">🌲 LumberJack</a>
+            </div>
+
+            <div class="section-title">🤖 SUN'IY INTELLEKT 🧠</div>
+            <div class="grid">
+                <a href="https://chat.openai.com" target="_blank" class="btn">💬 ChatGPT</a>
+                <a href="https://www.bing.com/images/create" target="_blank" class="btn">🎨 AI Image</a>
+            </div>
+
+            <div class="section-title">📸 IJTIMOIY TARMOQ 📱</div>
+            <div class="grid">
+                <button onclick="insta()" class="btn btn-full insta">INSTAGRAM (_behruz_real) 📸</button>
             </div>
         </div>
     </div>
 
     <script>
-        function unlockSystem() {
-            const pass = document.getElementById('main-pass').value;
-            if(pass === "Hypershot") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-wrapper').style.display = 'grid';
-            } else { alert("Xato! Faqat Behruzjon kira oladi."); }
-        }
-
-        function openPage(url) {
-            document.getElementById('content-frame').src = url;
-        }
-
-        function instaFollow() {
-            // Instagramga kirishdan oldin ogohlantirish
-            if(confirm("Avval _behruz_real ga follow bosing! Shundan so'ng profilingiz ochiladi. Rozimisiz?")) {
-                openPage('https://www.instagram.com/_behruz_real/');
+        function checkPass() {
+            const p = document.getElementById('pass-input').value;
+            if(p === "Hypershot") { 
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'flex';
+                }, 500);
+            } else {
+                alert("Xato parol! ❌");
             }
         }
 
-        function unlockAI() {
-            const code = document.getElementById('ai-code').value;
-            if(code === "0001") {
-                document.getElementById('ai-lock').style.display = 'none';
-                document.getElementById('ai-chat').style.display = 'flex';
-            } else { alert("AI terminali kodi xato!"); }
+        function toggleLangs() {
+            const list = document.getElementById('lang-list');
+            list.style.display = (list.style.display === "grid") ? "none" : "grid";
         }
 
-        function askAI() {
-            let inp = document.getElementById('ai-msg-input');
-            let box = document.getElementById('chatBox');
-            if(!inp.value.trim()) return;
-            
-            box.innerHTML += `<div class="msg-u"><b>Siz:</b> ${inp.value}</div>`;
-            
-            setTimeout(() => {
-                let reply = "Tushundim, Behruzjon. Men bu borada ma'lumot qidiryapman...";
-                if(inp.value.toLowerCase().includes("salom")) reply = "Assalomu alaykum! Men Behruzjonning shaxsiy yordamchisi Tarona AI man.";
-                if(inp.value.toLowerCase().includes("kim")) reply = "Men Tarona AI loyihasiman, Behruzjon tomonidan yaratilganman.";
-                
-                box.innerHTML += `<div class="msg-t"><b>Tarona:</b> ${reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-                inp.value = "";
-            }, 700);
+        function insta() {
+            if(confirm("Diqqat! Avval _behruz_real ga follow bosing! 👈")) {
+                window.open('https://www.instagram.com/_behruz_real/', '_blank');
+            }
         }
     </script>
 </body>
