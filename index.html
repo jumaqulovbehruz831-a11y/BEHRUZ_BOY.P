@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEKHA Platform</title>
+    <style>
+        body { margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); font-family: sans-serif; overflow: hidden; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        h2 { color: #d81b60; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; text-align: center; font-size: 18px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #d81b60; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #apps { display: none; text-align: center; }
+        .app-link { display: inline-block; margin: 20px; text-decoration: none; color: #333; font-weight: bold; }
+        .icon { font-size: 50px; display: block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div id="lock" class="card">
+        <h2>Assalomu alaykum!</h2>
+        <input type="password" id="p" placeholder="Parolni kiriting">
+        <button onclick="go()">Kirish</button>
+        <p style="font-size: 12px; color: #999; margin-top: 15px;">2026 — BEKHA Platform</p>
+    </div>
+
+    <div id="apps">
+        <h1 style="color: #333;">Xush kelibsiz!</h1>
+        <div style="display: flex; justify-content: center;">
+            <a href="https://www.youtube.com" target="_blank" class="app-link">
+                <span class="icon">📺</span>YouTube
+            </a>
+            <a href="https://www.instagram.com" target="_blank" class="app-link">
+                <span class="icon">📸</span>Instagram
+            </a>
+        </div>
+        <button onclick="location.reload()" style="width: auto; background: #666; padding: 10px 20px; margin-top: 20px;">Chiqish</button>
+    </div>
+
+    <script>
+        function go() {
+            if(document.getElementById('p').value === "777") { 
+                document.getElementById('lock').style.display = 'none';
+                document.getElementById('apps').style.display = 'block';
+                document.body.style.background = "#f4f7f6";
+            } else { alert("Xato parol!"); }
+        }
+    </script>
+</body>
+</html>
