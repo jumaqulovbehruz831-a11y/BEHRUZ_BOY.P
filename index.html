@@ -1,51 +1,14 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>Kira AI - Kelajak Intellekti</title>
-    <style>
-        body { background: #0b0e14; color: #00ffcc; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .chat-container { width: 400px; height: 500px; border: 2px solid #00ffcc; border-radius: 15px; display: flex; flex-direction: column; box-shadow: 0 0 20px #00ffcc; overflow: hidden; }
-        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .user-msg { align-self: flex-end; background: #00ffcc; color: black; padding: 8px 12px; border-radius: 10px; }
-        .ai-msg { align-self: flex-start; border: 1px solid #00ffcc; padding: 8px 12px; border-radius: 10px; }
-        .input-area { display: flex; border-top: 1px solid #333; }
-        input { flex: 1; background: transparent; border: none; color: white; padding: 15px; outline: none; }
-        button { background: #00ffcc; border: none; padding: 15px; cursor: pointer; font-weight: bold; }
-    </style>
-</head>
-<body>
+<div class="login-container">
+    <h2>Ommaviy platformaga xush kelibsiz!</h2>
+    
+    <div class="input-group">
+        <input type="password" id="passwordField" placeholder="Parolni kiriting">
+        <span id="toggleEye" onclick="toggleView()">👁️</span>
+    </div>
 
-<div class="chat-container">
-    <div class="chat-box" id="chatBox">
-        <div class="ai-msg">Salom! Men Kira AI. Sizga qanday yordam bera olaman?</div>
+    <div class="footer-links">
+        <a href="#" onclick="autoFill()">Parolni unutdingizmi?</a>
     </div>
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Savolingizni yozing...">
-        <button onclick="sendMessage()">Yuborish</button>
-    </div>
+
+    <button onclick="checkPassword()">Kirish</button>
 </div>
-
-<script>
-    async function sendMessage() {
-        const input = document.getElementById("userInput");
-        const chatBox = document.getElementById("chatBox");
-        if (!input.value) return;
-
-        chatBox.innerHTML += `<div class="user-msg">${input.value}</div>`;
-        
-        const response = await fetch('/ask', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({message: input.value})
-        });
-        const data = await response.json();
-        
-        chatBox.innerHTML += `<div class="ai-msg">${data.reply}</div>`;
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-</script>
-
-</body>
-</html>
