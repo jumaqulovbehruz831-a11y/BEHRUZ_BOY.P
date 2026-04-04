@@ -1,155 +1,129 @@
-import tkinter as tk
-from tkinter import messagebox, simpledialog
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Tarona OS - Behruz Jumaqulov</title>
+    <style>
+        :root { --blue: #00d2ff; --black: #ffffff; --bg: #050505; }
+        body { background: var(--bg); color: var(--black); font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+        
+        /* SAHIFALARNI BOSHQARISH */
+        .page { display: none; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .active { display: block; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-class TaronaAI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Tarona AI - Jumaqulov Behruz")
-        self.root.geometry("450x750")
-        self.root.configure(bg="#050505") # O'ta maxfiy qora fon
+        /* KO'K YOZUVLAR (UI ELEMENTLARI) */
+        .blue-ui { color: var(--blue); border: 1px solid var(--blue); padding: 12px 20px; border-radius: 8px; cursor: pointer; display: inline-block; margin: 10px; transition: 0.3s; background: rgba(0, 210, 255, 0.05); text-decoration: none; }
+        .blue-ui:hover { background: var(--blue); color: #000; box-shadow: 0 0 15px var(--blue); }
 
-        # --- MA'LUMOTLAR BAZASI ---
-        self.ball = 0
-        self.is_ghost = False
-        self.user_name = ""
-        self.admins = {
-            "Zafar": "Waterlum",
-            "Erkin": "Zero15",
-            "Asadbek": "Carline",
-            "Hojiakbar": "Otashu76",
-            "Behruzjon": "020922" # Sizning shaxsiy kodingiz
+        /* QORA YOZUVLAR (TAVSIF) */
+        .black-desc { color: #888; font-size: 14px; margin-bottom: 20px; display: block; }
+
+        /* PANELDAGI TUGMALAR (GRID) */
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; }
+        
+        .header { border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+        .stat-badge { position: fixed; top: 10px; right: 10px; background: var(--blue); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="stat-badge">Ball: <span id="score">0</span></div>
+
+<div id="page-1" class="page active">
+    <div class="header">
+        <h1 class="blue-ui">KIRISH TIZIMI</h1>
+        <span class="black-desc">Parolni kiriting (Masalan: Kimyo yoki Hypershot)</span>
+    </div>
+    <div style="text-align: center; margin-top: 50px;">
+        <input type="password" id="passInput" placeholder="PAROL..." style="padding: 15px; width: 250px; border-radius: 10px; border: 1px solid var(--blue); background: #111; color: white;">
+        <br><br>
+        <button class="blue-ui" onclick="checkAuth()">TIZIMGA KIRISH</button>
+    </div>
+</div>
+
+<div id="page-3" class="page">
+    <div class="header">
+        <h1 class="blue-ui">TARONA OS: HOME</h1>
+        <span class="black-desc">Bunda barcha darsliklar va o'yinlar jamlangan</span>
+    </div>
+    <div class="grid-menu">
+        <div class="blue-ui" onclick="goToPage(6)">💻 Dasturlash</div>
+        <div class="blue-ui" onclick="goToPage(8)">📐 Matematika</div>
+        <div class="blue-ui" onclick="goToPage(10)">🎮 O'yinlar</div>
+        <div class="blue-ui" onclick="goToPage(12)">🎬 Hordiq</div>
+        <div class="blue-ui" onclick="goToPage(19)">🔑 Admin Panel</div>
+        <div class="blue-ui" onclick="goToPage(31)">🧪 Test Markazi</div>
+        <div class="blue-ui" onclick="goToPage(26)">💬 Maxfiy Chat</div>
+        <div class="blue-ui" onclick="goToPage(1)">⬅ Exit</div>
+    </div>
+</div>
+
+<div id="page-31" class="page">
+    <div class="header">
+        <h1 class="blue-ui">TESTLAR: INFORMATIKA</h1>
+        <span class="black-desc">Har bir to'g'ri javob uchun 5 ball beriladi</span>
+    </div>
+    <div id="test-area">
+        <p>Savol 1: Algoritm nima?</p>
+        <button class="blue-ui" onclick="addScore(5)">Ketma-ketlik</button>
+        <button class="blue-ui" onclick="alert('Xato!')">Rasm</button>
+    </div>
+    <br>
+    <button class="blue-ui" onclick="goToPage(3)">HOMEGA QAYTISH</button>
+</div>
+
+<div id="page-19" class="page">
+    <h1 class="blue-ui">ADMINLARNI TEKSHIRISH</h1>
+    <span class="black-desc">Faqat ruxsati bor adminlar kira oladi</span>
+    <div id="admin-list">
+        <button class="blue-ui" onclick="adminLogin('Zafar', 'Naterlum')">Zafar Admin</button>
+        <button class="blue-ui" onclick="adminLogin('Erkin', 'zero15')">Erkin Admin</button>
+    </div>
+    <button class="blue-ui" onclick="goToPage(3)">ORQAGA</button>
+</div>
+
+<script>
+    let currentScore = 0;
+
+    // QIZIL YOZUVLARNING VAZIFALARI (MANTIQ)
+    function goToPage(pageNum) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + pageNum);
+        if(target) target.classList.add('active');
+        else alert(pageNum + "-chi sahifa hali kodga qo'shilmagan!");
+    }
+
+    function checkAuth() {
+        const p = document.getElementById('passInput').value;
+        // 1-rasmdagi parollar mantiqi
+        if(p === "Kimyo" || p === "Hypershot" || p === "avara0001") {
+            goToPage(3);
+        } else {
+            alert("Parol noto'g'ri!");
         }
-        self.fraud_code = "behruz020"
-        self.secret_chat_code = "001"
+    }
 
-        self.screen_1_login()
+    function addScore(points) {
+        currentScore += points;
+        document.getElementById('score').innerText = currentScore;
+        alert("To'g'ri! +" + points + " ball qo'shildi.");
+        // 3-rasm mantiqi: 50 ball bo'lsa sertifikat
+        if(currentScore >= 50) {
+            alert("TABRIKLAYMIZ! Siz 50 ball to'pladingiz va SERTIFIKAT oldingiz!");
+        }
+    }
 
-    def clear(self):
-        for w in self.root.winfo_children(): w.destroy()
+    function adminLogin(name, pass) {
+        const input = prompt(name + " uchun parolni kiriting:");
+        if(input === pass) {
+            alert("Xush kelibsiz, " + name + "!");
+            goToPage(3); // Admin panelga o'tish
+        } else {
+            alert("Xato!");
+        }
+    }
+</script>
 
-    # --- 1-2. KIRISH VA RO'YXATDAN O'TISH ---
-    def screen_1_login(self):
-        self.clear()
-        tk.Label(self.root, text="TARONA AI SYSTEM", fg="#00ccff", bg="#050505", font=("Arial", 22, "bold")).pack(pady=40)
-        
-        tk.Label(self.root, text="Kirish paroli (Kimyo):", fg="white", bg="#050505").pack()
-        self.pass_ent = tk.Entry(self.root, show="*", bg="#1a1a1a", fg="white", width=25)
-        self.pass_ent.pack(pady=10)
-
-        tk.Button(self.root, text="KIRISH", bg="#0055ff", fg="white", width=15, command=self.check_login).pack(pady=20)
-        
-        # Maxfiy Admin tugmasi (>)
-        tk.Button(self.root, text=">", command=self.screen_9_admin_gate, bg="#050505", fg="#0a0a0a", relief="flat").pack(side="left")
-
-    def check_login(self):
-        val = self.pass_ent.get()
-        if val == "Kimyo":
-            self.screen_2_reg()
-        elif val == self.fraud_code:
-            messagebox.showwarning("BLOK", "Fribgarlik kodi! Tizim yopildi.")
-            self.root.quit()
-        else:
-            messagebox.showerror("Xato", "Parol noto'g'ri!")
-
-    def screen_2_reg(self):
-        self.clear()
-        tk.Label(self.root, text="RO'YXATDAN O'TISH", fg="white", bg="#050505", font=("Arial", 15)).pack(pady=20)
-        
-        tk.Label(self.root, text="Ism Familiya:", fg="white", bg="#050505").pack()
-        self.name_ent = tk.Entry(self.root)
-        self.name_ent.pack(pady=10)
-
-        self.ghost_var = tk.BooleanVar()
-        tk.Checkbutton(self.root, text="Ghost Rejim (Ball berilmaydi)", variable=self.ghost_var, bg="#050505", fg="red").pack()
-
-        tk.Button(self.root, text="TASDIQLASH", command=self.screen_3_home).pack(pady=20)
-
-    # --- 3. ASOSIY SAHIFA (HOME) ---
-    def screen_3_home(self):
-        self.user_name = self.name_ent.get().capitalize()
-        self.is_ghost = self.ghost_var.get()
-        self.clear()
-
-        tk.Label(self.root, text=f"Foydalanuvchi: {self.user_name}", fg="white", bg="#050505").pack(anchor="nw", padx=10)
-        tk.Label(self.root, text=f"Ball: {self.ball}", fg="#00ff00", bg="#050505").pack(anchor="nw", padx=10)
-
-        # Bo'limlar tugmalari
-        sections = [
-            ("Informatika (5-6)", self.it_section),
-            ("Matematika & AI (7-8)", self.math_section),
-            ("Roblox Content (11)", self.screen_11_roblox),
-            ("Kinolar & Hordiq (12)", self.movie_section),
-            ("Secret Chat (26)", self.screen_26_secret_chat),
-            ("Sertifikat (18)", self.certificate_check),
-            ("Chiqish (34)", self.screen_1_login)
-        ]
-
-        for txt, cmd in sections:
-            tk.Button(self.root, text=txt, width=30, bg="#1a1a1a", fg="white", command=cmd).pack(pady=4)
-
-    # --- 11. ROBLOX CONTENT (MAXSUS OYNA) ---
-    def screen_11_roblox(self):
-        self.clear()
-        tk.Label(self.root, text="ROBLOX CONTENT PORTAL", fg="#ff00ff", bg="#050505", font=("Impact", 20)).pack(pady=20)
-        tk.Label(self.root, text="Stumbled Guys | Behruz Boy | Tadbirlar", fg="white", bg="#050505").pack()
-        
-        tk.Button(self.root, text="Eventlarni ko'rish", width=20).pack(pady=10)
-        tk.Button(self.root, text="Orqaga", command=self.screen_3_home).pack(pady=30)
-
-    # --- 26. SECRET CHAT (001 KODI BILAN) ---
-    def screen_26_secret_chat(self):
-        code = simpledialog.askstring("Xavfsizlik", "Maxfiy kodni kiriting (001):")
-        if code == self.secret_chat_code:
-            self.clear()
-            tk.Label(self.root, text="SECRET CHAT (MAXFIY)", fg="red", bg="#050505", font=("Courier", 16)).pack(pady=10)
-            chat_box = tk.Text(self.root, height=15, bg="black", fg="#00ff00")
-            chat_box.pack(padx=10)
-            chat_box.insert(tk.END, "Tizim: Maxfiy suhbat yoqildi...\n")
-            tk.Button(self.root, text="Chatni yopish", command=self.screen_3_home).pack(pady=10)
-        else:
-            messagebox.showerror("Rad etildi", "Kod noto'g'ri!")
-
-    # --- 9. ADMINLAR DARVOZASI (O'TA MAXFIY) ---
-    def screen_9_admin_gate(self):
-        # Admin ismini yoddan bilish shart, ro'yxat chiqmaydi
-        adm_name = simpledialog.askstring("Admin", "Admin logini:")
-        if adm_name in self.admins:
-            adm_pass = simpledialog.askstring("Admin", f"{adm_name}, parolingiz:", show="*")
-            if adm_pass == self.admins[adm_name]:
-                self.screen_30_32_admin_panel(adm_name)
-            else:
-                messagebox.showerror("Xato", "Parol noto'g'ri!")
-        else:
-            messagebox.showwarning("Ogohlantirish", "Admin topilmadi!")
-
-    # --- 30-32. ADMIN BOSHQARUV ---
-    def screen_30_32_admin_panel(self, name):
-        self.clear()
-        tk.Label(self.root, text=f"ADMIN: {name.upper()}", fg="red", bg="#050505", font=("Arial", 15, "bold")).pack(pady=20)
-        
-        tk.Button(self.root, text="Test qo'shish (30)", width=25).pack(pady=5)
-        tk.Button(self.root, text="Darslik yuklash (31)", width=25).pack(pady=5)
-        tk.Button(self.root, text="Kino qo'shish (32)", width=25, command=self.screen_32_add_movie).pack(pady=5)
-        tk.Button(self.root, text="Chiqish", command=self.screen_1_login).pack(pady=20)
-
-    def screen_32_add_movie(self):
-        self.clear()
-        tk.Label(self.root, text="JANRNI TANLANG", fg="white", bg="#050505").pack(pady=10)
-        for j in ["Jangovar", "Animatsiya", "Hayotiy", "Sehrli"]:
-            tk.Button(self.root, text=j, width=20, bg="#222", fg="white").pack(pady=2)
-        tk.Button(self.root, text="Orqaga", command=self.screen_3_home).pack(pady=20)
-
-    # Yordamchi funksiyalar
-    def it_section(self): messagebox.showinfo("IT", "Testlar yeching va ball to'plang!")
-    def math_section(self): messagebox.showinfo("Math", "AI yordamchi tayyor!")
-    def movie_section(self): messagebox.showinfo("Kino", "Hordiq chiqarish bo'limi")
-    def certificate_check(self):
-        if self.ball >= 50:
-            messagebox.showinfo("Sertifikat", "Tabriklaymiz! Siz sertifikat oldingiz.")
-        else:
-            messagebox.showwarning("Yetarli emas", "Sertifikat uchun 50 ball kerak!")
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = TaronaAI(root)
-    root.mainloop()
+</body>
+</html>
