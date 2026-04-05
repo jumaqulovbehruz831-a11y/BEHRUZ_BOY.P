@@ -2,128 +2,195 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Tarona OS - Behruz Jumaqulov</title>
+    <title>Prefrum - Jumaqulov Behruz Loyihasi</title>
     <style>
-        :root { --blue: #00d2ff; --black: #ffffff; --bg: #050505; }
-        body { background: var(--bg); color: var(--black); font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
-        
-        /* SAHIFALARNI BOSHQARISH */
-        .page { display: none; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .active { display: block; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        :root {
+            --neon-blue: #00d4ff;
+            --neon-red: #ff0055;
+            --bg-dark: #05050a;
+            --card-bg: #11111d;
+        }
 
-        /* KO'K YOZUVLAR (UI ELEMENTLARI) */
-        .blue-ui { color: var(--blue); border: 1px solid var(--blue); padding: 12px 20px; border-radius: 8px; cursor: pointer; display: inline-block; margin: 10px; transition: 0.3s; background: rgba(0, 210, 255, 0.05); text-decoration: none; }
-        .blue-ui:hover { background: var(--blue); color: #000; box-shadow: 0 0 15px var(--blue); }
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-        /* QORA YOZUVLAR (TAVSIF) */
-        .black-desc { color: #888; font-size: 14px; margin-bottom: 20px; display: block; }
+        .page {
+            display: none; /* Sahifalar yopiq turadi */
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-        /* PANELDAGI TUGMALAR (GRID) */
-        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; max-width: 800px; margin: 0 auto; }
-        
-        .header { border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        .stat-badge { position: fixed; top: 10px; right: 10px; background: var(--blue); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .active { display: flex; } /* Faqat bitta sahifa ko'rinadi */
+
+        /* Chizmadagi dizayn: Neon ramkalar */
+        .box {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px var(--neon-blue);
+            text-align: center;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        input {
+            width: 85%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #1a1a2e;
+            border: 1px solid var(--neon-blue);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--neon-blue);
+        }
+
+        .footer-creater {
+            font-size: 11px;
+            color: gray;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-<div class="stat-badge">Ball: <span id="score">0</span></div>
-
-<div id="page-1" class="page active">
-    <div class="header">
-        <h1 class="blue-ui">KIRISH TIZIMI</h1>
-        <span class="black-desc">Parolni kiriting (Masalan: Kimyo yoki Hypershot)</span>
+    <div id="page1" class="page active">
+        <div class="box">
+            <h1>Prefrum</h1>
+            <p>Assalomu Alaykum!</p>
+            <input type="password" id="passInput" placeholder="Parol (001)">
+            <button onclick="checkPass()" style="width: 100%; margin-top: 10px;">KIRISH</button>
+            <p style="color: var(--neon-blue); cursor: pointer; font-size: 13px;">Forgot the password?</p>
+            <hr style="border: 0.5px solid #333; margin: 15px 0;">
+            <button onclick="alert('Tez kunda!')" style="border-color: gray; font-size: 12px;">Ro'yxatdan o'tish</button>
+            <div class="footer-creater">Yaratuvchi: Jumaqulov Behruz</div>
+        </div>
     </div>
-    <div style="text-align: center; margin-top: 50px;">
-        <input type="password" id="passInput" placeholder="PAROL..." style="padding: 15px; width: 250px; border-radius: 10px; border: 1px solid var(--blue); background: #111; color: white;">
-        <br><br>
-        <button class="blue-ui" onclick="checkAuth()">TIZIMGA KIRISH</button>
-    </div>
-</div>
 
-<div id="page-3" class="page">
-    <div class="header">
-        <h1 class="blue-ui">TARONA OS: HOME</h1>
-        <span class="black-desc">Bunda barcha darsliklar va o'yinlar jamlangan</span>
+    <div id="page2" class="page">
+        <div class="header">
+            <span><b>Prefrum Home</b></span>
+            <span>Ball: <b id="ballVal" style="color: var(--neon-blue);">0</b></span>
+        </div>
+        <div class="btn-grid">
+            <button onclick="show(3)">🛡️ Admin</button>
+            <button onclick="show(4)">📐 Matematika</button>
+            <button onclick="show(5)">💻 Informatika</button>
+            <button onclick="show(6)">🎬 Kinolar</button>
+            <button onclick="show(7)">🎮 O'yinlar</button>
+            <button onclick="show(8)">📚 Kitoblar</button>
+        </div>
+        <button onclick="show(1)" style="border-color: var(--neon-red); color: var(--neon-red);">EXIT (CHIQISH)</button>
     </div>
-    <div class="grid-menu">
-        <div class="blue-ui" onclick="goToPage(6)">💻 Dasturlash</div>
-        <div class="blue-ui" onclick="goToPage(8)">📐 Matematika</div>
-        <div class="blue-ui" onclick="goToPage(10)">🎮 O'yinlar</div>
-        <div class="blue-ui" onclick="goToPage(12)">🎬 Hordiq</div>
-        <div class="blue-ui" onclick="goToPage(19)">🔑 Admin Panel</div>
-        <div class="blue-ui" onclick="goToPage(31)">🧪 Test Markazi</div>
-        <div class="blue-ui" onclick="goToPage(26)">💬 Maxfiy Chat</div>
-        <div class="blue-ui" onclick="goToPage(1)">⬅ Exit</div>
+
+    <div id="page3" class="page">
+        <h2>Admin Panel</h2>
+        <div class="box">
+            <p>Foydalanuvchi: Jumaqulov Behruz</p>
+            <p>Xabarlar: 0</p>
+            <button onclick="alert('Savol qo\'shish oynasi')" style="width: 100%;">Savol Qo'shish</button>
+        </div>
+        <button onclick="show(2)">Orqaga</button>
     </div>
-</div>
 
-<div id="page-31" class="page">
-    <div class="header">
-        <h1 class="blue-ui">TESTLAR: INFORMATIKA</h1>
-        <span class="black-desc">Har bir to'g'ri javob uchun 5 ball beriladi</span>
+    <div id="page4" class="page">
+        <h2>Matematika Bo'limi</h2>
+        <div class="box">
+            <p id="mathQuest">Savol: 25 + 25 * 2 = ?</p>
+            <div class="btn-grid">
+                <button onclick="mathCheck(100, this)">100</button>
+                <button onclick="mathCheck(75, this)">75</button>
+            </div>
+            <p id="mathMsg"></p>
+        </div>
+        <button onclick="show(2)">Orqaga</button>
     </div>
-    <div id="test-area">
-        <p>Savol 1: Algoritm nima?</p>
-        <button class="blue-ui" onclick="addScore(5)">Ketma-ketlik</button>
-        <button class="blue-ui" onclick="alert('Xato!')">Rasm</button>
+
+    <div id="page7" class="page">
+        <h2>Ko'ngilochar Bo'lim</h2>
+        <div class="box" style="border-color: #ffaa00;">
+            <h3>Roblox Content</h3>
+            <p>Admin: Behruz_Boy01fx</p>
+            <div style="background: #222; height: 100px; border-radius: 10px; margin: 10px 0; display: flex; align-items: center; justify-content: center;">👤 Avatar</div>
+            <button style="width: 100%; border-color: #ffaa00;">O'yinga kirish</button>
+        </div>
+        <button onclick="show(2)">Orqaga</button>
     </div>
-    <br>
-    <button class="blue-ui" onclick="goToPage(3)">HOMEGA QAYTISH</button>
-</div>
 
-<div id="page-19" class="page">
-    <h1 class="blue-ui">ADMINLARNI TEKSHIRISH</h1>
-    <span class="black-desc">Faqat ruxsati bor adminlar kira oladi</span>
-    <div id="admin-list">
-        <button class="blue-ui" onclick="adminLogin('Zafar', 'Naterlum')">Zafar Admin</button>
-        <button class="blue-ui" onclick="adminLogin('Erkin', 'zero15')">Erkin Admin</button>
-    </div>
-    <button class="blue-ui" onclick="goToPage(3)">ORQAGA</button>
-</div>
+    <script>
+        let score = 0;
 
-<script>
-    let currentScore = 0;
-
-    // QIZIL YOZUVLARNING VAZIFALARI (MANTIQ)
-    function goToPage(pageNum) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const target = document.getElementById('page-' + pageNum);
-        if(target) target.classList.add('active');
-        else alert(pageNum + "-chi sahifa hali kodga qo'shilmagan!");
-    }
-
-    function checkAuth() {
-        const p = document.getElementById('passInput').value;
-        // 1-rasmdagi parollar mantiqi
-        if(p === "Kimyo" || p === "Hypershot" || p === "avara0001") {
-            goToPage(3);
-        } else {
-            alert("Parol noto'g'ri!");
+        // Sahifalarni chizmadagi raqami bo'yicha ochish
+        function show(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + num).classList.add('active');
         }
-    }
 
-    function addScore(points) {
-        currentScore += points;
-        document.getElementById('score').innerText = currentScore;
-        alert("To'g'ri! +" + points + " ball qo'shildi.");
-        // 3-rasm mantiqi: 50 ball bo'lsa sertifikat
-        if(currentScore >= 50) {
-            alert("TABRIKLAYMIZ! Siz 50 ball to'pladingiz va SERTIFIKAT oldingiz!");
+        // Chizmadagi parol mantiqi
+        function checkPass() {
+            let p = document.getElementById('passInput').value;
+            if(p === "001" || p === "Behruzjon") {
+                show(2);
+            } else {
+                alert("Parol xato! Chizmaga qarang.");
+            }
         }
-    }
 
-    function adminLogin(name, pass) {
-        const input = prompt(name + " uchun parolni kiriting:");
-        if(input === pass) {
-            alert("Xush kelibsiz, " + name + "!");
-            goToPage(3); // Admin panelga o'tish
-        } else {
-            alert("Xato!");
+        // Test va Ball tizimi
+        function mathCheck(ans, btn) {
+            let m = document.getElementById('mathMsg');
+            if(ans === 75) {
+                m.innerText = "To'g'ri! +5 ball";
+                m.style.color = "lime";
+                score += 5;
+                document.getElementById('ballVal').innerText = score;
+                btn.style.background = "green";
+            } else {
+                m.innerText = "Xato!";
+                m.style.color = "red";
+                btn.style.background = "red";
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
