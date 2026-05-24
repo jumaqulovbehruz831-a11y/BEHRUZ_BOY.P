@@ -2,21 +2,33 @@ window.uploadFromGalereya = function(input) {
     const file = input.files[0];
     if (!file) return;
 
-    // Rasm va videolar uchun hajmni biroz oshiramiz (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-        alert("Fayl hajmi 2MB dan oshmasligi kerak!");
-        input.value = "";
-        return;
-    }
-
+    // Rasm uchun avtomatik siqish (Sifatni 0.7 qilib pasaytiramiz)
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = () => {
-        if (file.type.startsWith('image/')) {
-            sendToFirebase("LOCAL_IMG:" + reader.result);
-        } else if (file.type.startsWith('video/')) {
-            sendToFirebase("LOCAL_VID:" + reader.result);
-        }
-        input.value = "";
+    
+    reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800; // Rasmni kengligini 800px qilib cheklaymiz
+            const scaleSize = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            // Sifatni 0.7 (70%) qilib, hajmni keskin kamaytiramiz
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            
+            if (dataUrl.length > 1000000) { 
+                alert("Fayl hali ham juda katta, iltimos, kichikroq fayl tanlang.");
+                return;
+            }
+            sendToFirebase("LOCAL_IMG:" + dataUrl);
+        };
     };
+    input.value = "";
 };
