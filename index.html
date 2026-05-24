@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v16.0</title>
+    <title>Cyber-X Ultra Chat v15.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
@@ -273,60 +273,38 @@
             }
         }
 
-        /* 🌐 MUTLAQ BARQAROR LINKLI YUKLASH TIZIMI (IMGBB & CATBOX) */
+        /* 🚀 100% ISHONCHLI YANGI FAYL YUKLASH TIZIMI (DIRECT BASE64 FIREBASE) */
         window.uploadFromGalereya = function(input) {
             const file = input.files[0];
             if (!file) return;
 
             const statusText = document.getElementById('typing-txt');
-            statusText.innerText = "Fayl yuklanmoqda... ⏳";
+            statusText.innerText = "Fayl tayyorlanmoqda... ⏳";
 
-            const formData = new FormData();
-
-            // 📸 AGAR RASM BO'LSA -> IMGBB SERVERIGA
-            if (file.type.startsWith('image/')) {
-                formData.append('image', file);
-                fetch('https://api.imgbb.com/1/upload?key=6d8f28bc9ef6cb90802d2bc7a3e792b0', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    statusText.innerText = "";
-                    if (data.success && data.data.url) {
-                        sendToFirebase("IMG_URL:" + data.data.url);
-                    } else { alert("Rasm yuklashda xatolik bo'ldi."); }
-                    input.value = "";
-                })
-                .catch(() => {
-                    statusText.innerText = "";
-                    alert("Rasm serverida xatolik yuz berdi.");
-                    input.value = "";
-                });
-            } 
-            // 🎬 AGAR VIDEO BO'LSA -> CATBOX PRO SERVERIGA
-            else if (file.type.startsWith('video/')) {
-                formData.append('reqtype', 'fileupload');
-                formData.append('fileToUpload', file);
-
-                fetch('https://catbox.moe/user/api.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.text()) // Catbox to'g'ridan-to'g'ri URL tekst qaytaradi
-                .then(link => {
-                    statusText.innerText = "";
-                    if (link.startsWith('https://files.catbox.moe/')) {
-                        sendToFirebase("VID_URL:" + link.trim());
-                    } else { alert("Video yuklashda xatolik bo'ldi."); }
-                    input.value = "";
-                })
-                .catch(() => {
-                    statusText.innerText = "";
-                    alert("Video serverida ulanish xatoligi bo'ldi.");
-                    input.value = "";
-                });
+            // Katta videolarda muammo bo'lmasligi uchun cheklov (max 15MB)
+            if (file.size > 15 * 1024 * 1024) {
+                alert("Xavfsizlik uchun fayl hajmi 15MB dan oshmasligi kerak!");
+                statusText.innerText = "";
+                input.value = "";
+                return;
             }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                statusText.innerText = "";
+                if (file.type.startsWith('image/')) {
+                    sendToFirebase("LOCAL_IMG:" + reader.result);
+                } else if (file.type.startsWith('video/')) {
+                    sendToFirebase("LOCAL_VID:" + reader.result);
+                }
+                input.value = "";
+            };
+            reader.onerror = () => {
+                statusText.innerText = "";
+                alert("Faylni o'qishda xatolik yuz berdi!");
+                input.value = "";
+            };
         }
 
         window.sendSticker = function(emoji) {
@@ -409,8 +387,8 @@
 
         function formatMessage(text) {
             if (text.startsWith('TEXT:')) return text.replace('TEXT:', '').replace(/\n/g, '<br>');
-            if (text.startsWith('IMG_URL:')) return `<img src="${text.replace('IMG_URL:', '')}" class="chat-img" onclick="window.open(this.src)">`;
-            if (text.startsWith('VID_URL:')) return `<video src="${text.replace('VID_URL:', '')}" class="chat-video" controls></video>`;
+            if (text.startsWith('LOCAL_IMG:')) return `<img src="${text.replace('LOCAL_IMG:', '')}" class="chat-img" onclick="window.open(this.src)">`;
+            if (text.startsWith('LOCAL_VID:')) return `<video src="${text.replace('LOCAL_VID:', '')}" class="chat-video" controls></video>`;
             if (text.startsWith('STIKER_EMOJI:')) return `<span style="font-size: 3.5rem; display:block; margin:5px 0; user-select:none;">${text.replace('STIKER_EMOJI:', '')}</span>`;
             if (text.startsWith('AUDIO_BASE64:')) return `<audio src="${text.replace('AUDIO_BASE64:', '')}" controls></audio>`;
             return text.replace(/\n/g, '<br>');
@@ -452,8 +430,8 @@
                     let cleanText = "Media kontent";
                     if(val.message.startsWith('TEXT:')) cleanText = val.message.replace('TEXT:','');
                     else if(val.message.startsWith('STIKER_EMOJI:')) cleanText = "[Stiker]";
-                    else if(val.message.startsWith('IMG_URL:')) cleanText = "[Rasm]";
-                    else if(val.message.startsWith('VID_URL:')) cleanText = "[Video]";
+                    else if(val.message.startsWith('LOCAL_IMG:')) cleanText = "[Rasm]";
+                    else if(val.message.startsWith('LOCAL_VID:')) cleanText = "[Video]";
                     else if(val.message.startsWith('AUDIO_BASE64:')) cleanText = "[Ovozli xabar]";
 
                     msgDiv.innerHTML = `
@@ -471,4 +449,9 @@
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
                 if (!initial && snapshot.exists()) notificationSound.play().catch(()=>{});
-                initial =
+                initial = false;
+            });
+        }
+    </script>
+</body>
+</html>
