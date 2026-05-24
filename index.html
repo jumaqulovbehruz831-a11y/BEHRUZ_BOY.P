@@ -3,50 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v7.0</title>
+    <title>Cyber-X Ultra Chat v5.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #030712; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
         
-        /* Kiber-Atmosfera Tuman Animatsiyasi */
-        body::before, body::after {
-            content: '';
-            position: absolute;
-            width: 40%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            filter: blur(50px);
-            opacity: 0.8;
-            background: radial-gradient(circle at center, rgba(0, 251, 255, 0.15) 0%, rgba(163, 7, 250, 0.1) 40%, rgba(0, 0, 0, 0) 70%);
-        }
-        body::before { left: -10%; animation: kiberTuman 8s infinite alternate ease-in-out; }
-        body::after { right: -10%; animation: kiberTuman 10s infinite alternate-reverse ease-in-out; }
-
-        @keyframes kiberTuman {
-            0% { transform: translate(-20px, -10px) scale(1); opacity: 0.6; }
-            50% { transform: translate(10px, 20px) scale(1.1); opacity: 0.9; }
-            100% { transform: translate(-10px, -20px) scale(1.05); opacity: 0.7; }
-        }
-
-        .cyber-line {
-            position: absolute;
-            background: linear-gradient(to bottom, transparent, rgba(0, 251, 255, 0.8), transparent);
-            width: 2px;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 1;
-        }
-
         /* Kirish oynasi */
-        #login-screen { background: rgba(10, 15, 30, 0.95); padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 0 40px rgba(0, 251, 255, 0.25); border: 1px solid #00fbff; width: 90%; max-width: 400px; animation: zoomIn 0.3s ease-out; position: relative; z-index: 10; }
+        #login-screen { background: rgba(10, 15, 30, 0.95); padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 0 40px rgba(0, 251, 255, 0.25); border: 1px solid #00fbff; width: 90%; max-width: 400px; animation: zoomIn 0.3s ease-out; }
         h2 { font-size: 2rem; margin-bottom: 25px; color: #00fbff; text-shadow: 0 0 15px rgba(0, 251, 255, 0.4); letter-spacing: 2px; font-weight: 900; }
         input[type="text"], input[type="password"] { padding: 14px 18px; border-radius: 12px; border: 1px solid #1f2d4a; margin: 10px 0; width: 100%; background: #0f172a; color: white; outline: none; transition: 0.3s; font-size: 1rem; }
         input:focus { border-color: #00fbff; box-shadow: 0 0 12px rgba(0, 251, 255, 0.3); }
-        .enter-btn { padding: 14px; border-radius: 12px; border: none; background: linear-gradient(45deg, #0055ff, #a307fa); color: white; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4); transition: 0.2s; }
+        .enter-btn { padding: 14px; border-radius: 12px; border: none; background: linear-gradient(45deg, #0055ff, #00fbff); color: white; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4); transition: 0.2s; }
+        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 251, 255, 0.6); }
         
         /* Chat tuzilishi */
-        #chat-container { display: none; width: 100%; max-width: 900px; height: 95vh; background: #090d16; flex-direction: column; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 1px solid #1e293b; position: relative; background-size: cover; background-position: center; transition: background 0.5s ease; z-index: 5; }
+        #chat-container { display: none; width: 100%; max-width: 850px; height: 95vh; background: #090d16; flex-direction: column; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 1px solid #1e293b; position: relative; background-size: cover; background-position: center; transition: background 0.5s ease; }
         
         /* Header paneli */
         #chat-header { background: rgba(15, 23, 42, 0.85); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; backdrop-filter: blur(20px); z-index: 10; }
@@ -55,70 +26,82 @@
         .online-dot { width: 10px; height: 10px; background: #39ff14; border-radius: 50%; box-shadow: 0 0 10px #39ff14; }
         .typing-status { font-size: 0.8rem; color: #00fbff; font-style: italic; min-height: 18px; }
         
+        /* Fonlar galereyasi paneli */
+        .header-actions { display: flex; gap: 10px; align-items: center; }
         .bg-menu-btn { background: #1e293b; color: #00fbff; padding: 10px 16px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; border: 1px solid #334155; cursor: pointer; transition: 0.2s; }
-        #bg-gallery { display: none; position: absolute; top: 75px; right: 25px; background: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 16px; width: 280px; grid-template-columns: repeat(2, 1fr); gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 20; animation: slideUp 0.2s ease-out; }
+        .bg-menu-btn:hover { background: #334155; }
+        #bg-gallery { display: none; position: absolute; top: 75px; right: 25px; background: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 16px; width: 280px; grid-template-columns: repeat(2, 1fr); gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 20; animation: fadeIn 0.2s ease-out; }
         .bg-thumb { height: 70px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; transition: 0.2s; position: relative; }
+        .bg-thumb:hover { border-color: #00fbff; transform: scale(1.05); }
         .bg-thumb span { position: absolute; bottom: 2px; left: 4px; font-size: 0.65rem; background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 4px; }
 
         /* Xabarlar oynasi */
         #chat-box { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; background: rgba(3, 7, 18, 0.2); scroll-behavior: smooth; }
         
-        /* Premium Xabar dizaynlari */
-        .msg { background: #1e293b; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 70%; word-wrap: break-word; align-self: flex-start; border: 1px solid #334155; position: relative; animation: slideUp 0.25s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
-        .msg.my-msg { align-self: flex-end; background: linear-gradient(135deg, #0055ff, #a307fa); border: none; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3); }
+        /* Premium Xabar dizaynlari va Kirish/O'chish Animatsiyalari */
+        .msg { background: #1e293b; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 70%; word-wrap: break-word; align-self: flex-start; border: 1px solid #334155; position: relative; animation: slideUp 0.25s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; transition: opacity 0.3s ease, transform 0.3s ease; }
+        .msg.my-msg { align-self: flex-end; background: linear-gradient(135deg, #0055ff, #0099ff); border: none; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3); }
         .msg b { color: #00fbff; display: block; font-size: 0.85em; margin-bottom: 5px; text-transform: capitalize; }
         .msg.my-msg b { color: #ffffff; opacity: 0.9; }
         
-        /* Telegram uslubidagi Mukammal Console */
+        /* Reply (Javob berilgan xabar) ko'rinishi */
+        .reply-box-in-msg { background: rgba(0, 0, 0, 0.2); border-left: 3px solid #00fbff; padding: 6px 10px; border-radius: 4px; font-size: 0.82rem; margin-bottom: 6px; color: #cbd5e1; }
+        .msg.my-msg .reply-box-in-msg { border-left-color: #fff; background: rgba(255,255,255,0.15); color: #fff; }
+
+        /* Telegram uslubidagi Pastki Console (Input Area) */
         #input-area { padding: 15px 20px; background: #090d16; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #1e293b; z-index: 10; }
-        .telegram-console { display: flex; align-items: flex-end; background: #0e121f; border: 1px solid #1e293b; border-radius: 25px; padding: 5px 15px; width: 100%; transition: border-color 0.2s; }
+        .reply-preview-bar { display: none; background: #1e293b; padding: 10px 15px; border-radius: 10px; justify-content: space-between; align-items: center; border-left: 4px solid #00fbff; animation: fadeIn 0.2s ease; }
+        
+        .telegram-console { display: flex; align-items: center; background: #111827; border: 1px solid #1e293b; border-radius: 25px; padding: 5px 15px; width: 100%; transition: border-color 0.2s; }
         .telegram-console:focus-within { border-color: #00fbff; box-shadow: 0 0 8px rgba(0, 251, 255, 0.2); }
         
-        /* Textarea endi Enter bosganda pastga tushadi */
-        #message-input { flex: 1; background: transparent; border: none; color: white; padding: 10px 12px; outline: none; font-size: 0.95rem; resize: none; max-height: 120px; font-family: inherit; }
+        #message-input { flex: 1; background: transparent; border: none; color: white; padding: 10px 12px; outline: none; font-size: 0.95rem; }
         
-        .console-btn { background: none; border: none; color: #94a3b8; font-size: 1.35rem; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; transition: 0.2s; width: auto; height: 38px; }
-        .console-btn:hover { color: #00fbff; transform: scale(1.1); }
+        .console-btn { background: none; border: none; color: #94a3b8; font-size: 1.35rem; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; transition: color 0.2s, transform 0.1s; width: auto; }
+        .console-btn:hover { color: #00fbff; transform: scale(1.08); }
+        .console-btn:active { transform: scale(0.95); }
+        #rec-btn.recording { color: #ef4444; animation: pulseRecord 1s infinite; }
         
-        /* Yuborish o'qi tugmasi */
-        .send-btn { color: #38bdf8; display: none; animation: fadeIn 0.2s ease; }
-        .send-btn:hover { color: #00fbff; }
+        /* Yuklash menyusi (Skrepka ichidagi yashirin menyu) */
+        #attachment-menu { display: none; position: absolute; bottom: 75px; left: 20px; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 10px; flex-direction: column; gap: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 30; animation: slideUp 0.15s ease-out; }
+        #attachment-menu label, #attachment-menu button { padding: 10px 15px; border-radius: 8px; color: #cbd5e1; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; background: transparent; border: none; width: 100%; text-align: left; }
+        #attachment-menu label:hover, #attachment-menu button:hover { background: #1e293b; color: #00fbff; }
 
-        /* Mikrofon Pulsatsiya Animatsiyasi */
-        #rec-btn.recording { color: #ef4444; animation: voicePulse 1s infinite; }
+        /* Xabar tugmalari (Like, Reply, Delete) */
+        .msg-tools { display: flex; gap: 12px; margin-top: 8px; font-size: 0.75rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
+        .tool-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.75rem; padding: 0; width: auto; }
+        .tool-btn:hover { color: #00fbff; text-decoration: underline; }
+        .tool-btn.del-x { color: #f43f5e; }
 
-        .chat-img { max-width: 100%; max-height: 280px; border-radius: 12px; margin-top: 6px; display: block; border: 1px solid rgba(255,255,255,0.1); }
-        audio { margin-top: 6px; max-width: 100%; outline: none; display: block; }
+        /* Emoji Paneli */
+        #emoji-panel { display: none; position: absolute; bottom: 75px; right: 55px; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 12px; grid-template-columns: repeat(6, 1fr); gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 30; animation: fadeIn 0.15s ease-out; }
+        #emoji-panel span { cursor: pointer; font-size: 1.3rem; transition: 0.15s; text-align: center; display: block; }
+        #emoji-panel span:hover { transform: scale(1.25); }
 
+        /* Multimedia elementlari dizayni */
+        .chat-img, .chat-video { max-width: 100%; max-height: 280px; border-radius: 12px; margin-top: 6px; display: block; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        audio { margin-top: 6px; max-width: 100%; outline: none; }
+
+        /* Animatsiyalar */
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes voicePulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseRecord { 50% { opacity: 0.4; } }
         
+        /* Skrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00fbff; }
     </style>
 </head>
 <body>
 
-    <div class="cyber-line" style="top: 10%; left: 15%; height: 60px; animation: cyberLineShot 3s infinite 0.5s;"></div>
-    <div class="cyber-line" style="top: 40%; right: 20%; height: 80px; animation: cyberLineShot 4s infinite 1.5s;"></div>
-
-    <style>
-        @keyframes cyberLineShot {
-            0% { opacity: 0; transform: translateY(-50px); }
-            10% { opacity: 0.8; }
-            50% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 0; transform: translateY(50px); }
-        }
-    </style>
-
     <div id="login-screen">
-        <h2>CYBER SYSTEM</h2>
+        <h2>CYBER-X SYSTEM</h2>
         <input type="text" id="user-name" placeholder="Ismingiz...">
         <input type="password" id="chat-pass" placeholder="Xavfsizlik kodi...">
         <button class="enter-btn" onclick="checkAccess()">Tizimni Yoqish</button>
-        <p id="error" style="color: #ef4444; display: none; margin-top: 15px; font-weight: bold;">Noto'g'ri kod!</p>
+        <p id="error" style="color: #f43f5e; display: none; margin-top: 15px; font-weight: bold;">Xavfsizlik paroli noto'g'ri!</p>
     </div>
 
     <div id="chat-container">
@@ -130,36 +113,61 @@
                 </div>
                 <div class="typing-status" id="typing-txt"></div>
             </div>
-            <button class="bg-menu-btn" onclick="toggleBgMenu()">Fonlar 🖼️</button>
-            <div id="bg-gallery">
-                <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600')"><span>BMW Neon</span></div>
-                <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600')"><span>Cyberpunk</span></div>
+            
+            <div class="header-actions">
+                <button class="bg-menu-btn" onclick="toggleBgMenu()">Mavzular (Fon) 🖼️</button>
+                
+                <div id="bg-gallery">
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600')"><span>BMW Neon</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600')"><span>Stadium</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600')"><span>Cyberpunk</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=600')"><span>Cosmos</span></div>
+                </div>
             </div>
         </div>
         
         <div id="chat-box"></div>
+        
+        <div id="emoji-panel">
+            <span onclick="addEmoji('😀')">😀</span><span onclick="addEmoji('😂')">😂</span><span onclick="addEmoji('🔥')">🔥</span>
+            <span onclick="addEmoji('👍')">👍</span><span onclick="addEmoji('❤️')">❤️</span><span onclick="addEmoji('😎')">😎</span>
+            <span onclick="addEmoji('👑')">👑</span><span onclick="addEmoji('🚀')">🚀</span><span onclick="addEmoji('🚗')">🚗</span>
+            <span onclick="addEmoji('💻')">💻</span><span onclick="addEmoji('🤫')">🤫</span><span onclick="addEmoji('🎯')">🎯</span>
+        </div>
+
+        <div id="attachment-menu">
+            <label><input type="file" id="file-photo" accept="image/*" style="display:none;" onchange="uploadFile('image')">🖼️ Rasm yuborish</label>
+            <label><input type="file" id="file-video" accept="video/*" style="display:none;" onchange="uploadFile('video')">🎥 Video yuborish</label>
+        </div>
 
         <div id="input-area">
-            <div class="telegram-console">
-                <button class="console-btn">📎</button>
-                <textarea id="message-input" rows="1" placeholder="Xabar yozing..." oninput="handleInput(this)"></textarea>
-                <button class="console-btn">😊</button>
-                
-                <button class="console-btn send-btn" id="send-btn" onclick="sendMessage()">🚀</button>
-                <button class="console-btn" id="rec-btn" onclick="toggleRecording()">🎙️</button>
+            <div class="reply-preview-bar" id="reply-bar">
+                <div id="reply-preview-text" style="font-size:0.85rem; color:#cbd5e1;"></div>
+                <span style="cursor:pointer; color:#f43f5e; font-weight:bold;" onclick="cancelReply()">❌</span>
+            </div>
+            
+            <div style="display: flex; gap: 10px; width: 100%; align-items: center; position: relative;">
+                <div class="telegram-console">
+                    <button class="console-btn" onclick="toggleAttachmentMenu()">📎</button>
+                    <input type="text" id="message-input" placeholder="Xabar yozing...">
+                    <button class="console-btn" onclick="toggleEmoji()">😊</button>
+                </div>
+                <button class="console-btn" id="rec-btn" style="color: #00fbff; background: #111827; border: 1px solid #1e293b; padding: 11px; border-radius: 50%;" onclick="toggleRecording()">🎙️</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBOF8dOWfCUJHBPChgXIRrmvv374Lkv8Y8",
             databaseURL: "https://special-chat-a2ded-default-rtdb.firebaseio.com",
             projectId: "special-chat-a2ded",
         };
+        
+        // Firebase-ni ishga tushirish
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
@@ -167,14 +175,24 @@
         let currentUsername = "";
         let mediaRecorder;
         let audioChunks = [];
+        let activeReplyId = null;
+        let activeReplyText = "";
+        let typingTimeout;
         const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2357/2357-84.wav');
 
         window.checkAccess = function() {
-            if (document.getElementById('chat-pass').value === SECRET_CODE && document.getElementById('user-name').value.trim() !== "") {
-                currentUsername = document.getElementById('user-name').value.trim();
+            const pass = document.getElementById('chat-pass').value;
+            const name = document.getElementById('user-name').value;
+            if (pass === SECRET_CODE && name.trim() !== "") {
+                currentUsername = name.trim();
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-container').style.display = 'flex';
+                
+                const savedBg = localStorage.getItem('cyber_v5_bg');
+                if(savedBg) document.getElementById('chat-container').style.backgroundImage = `url('${savedBg}')`;
+                
                 loadMessages();
+                listenTyping();
             } else {
                 document.getElementById('error').style.display = 'block';
             }
@@ -187,85 +205,113 @@
 
         window.setBg = function(url) {
             document.getElementById('chat-container').style.backgroundImage = `url('${url}')`;
+            localStorage.setItem('cyber_v5_bg', url);
             toggleBgMenu();
         }
 
-        // Matn yozilganda tugmalarni almashtirish va textarea balandligini moslash
-        window.handleInput = function(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-            
-            const sendBtn = document.getElementById('send-btn');
-            const recBtn = document.getElementById('rec-btn');
-            
-            if (textarea.value.trim() !== "") {
-                sendBtn.style.display = 'flex';
-                recBtn.style.display = 'none';
-            } else {
-                sendBtn.style.display = 'none';
-                recBtn.style.display = 'flex';
-            }
+        window.toggleAttachmentMenu = function() {
+            const menu = document.getElementById('attachment-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        window.sendMessage = function() {
-            const textarea = document.getElementById('message-input');
-            const text = textarea.value;
-            if (text.trim() !== "") {
-                push(ref(db, 'global_chat'), { sender: currentUsername, message: text, time: Date.now() });
-                textarea.value = "";
-                handleInput(textarea); // Tugmalar holatini qaytarish
-            }
-        }
+        // Rasm va videolarni Base64 formatda yuborish funksiyasi
+        window.uploadFile = function(type) {
+            const fileInput = type === 'image' ? document.getElementById('file-photo') : document.getElementById('file-video');
+            const file = fileInput.files[0];
+            if (!file) return;
 
-        // Mukammallashtirilgan Ovoz yozish mexanizmi (Firebase v9 standartida)
-        window.toggleRecording = async function() {
-            const btn = document.getElementById('rec-btn');
-            if (!mediaRecorder || mediaRecorder.state === "inactive") {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    
-                    mediaRecorder.ondataavailable = e => {
-                        if (e.data.size > 0) audioChunks.push(e.data);
-                    };
-                    
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(audioChunks, { type: 'audio/mp3' });
-                        const reader = new FileReader();
-                        reader.readAsDataURL(blob);
-                        reader.onloadend = () => {
-                            // Ovozni xavfsiz Base64 string qilib bazaga yuklash
-                            push(ref(db, 'global_chat'), { 
-                                sender: currentUsername, 
-                                message: "AUDIO_BASE64:" + reader.result, 
-                                time: Date.now() 
-                            });
-                        };
-                        // Mikrofonni o'chirish (Xavfsizlik uchun)
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-                    
-                    mediaRecorder.start();
-                    btn.classList.add('recording');
-                    btn.innerHTML = "🛑";
-                } catch (err) {
-                    alert("Mikrofonga ruxsat berilmadi yoki xato yuz berdi!");
-                }
-            } else {
-                mediaRecorder.stop();
-                btn.classList.remove('recording');
-                btn.innerHTML = "🎙️";
-            }
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                const prefix = type === 'image' ? 'DATA_IMAGE:' : 'DATA_VIDEO:';
+                const messageData = {
+                    sender: currentUsername,
+                    message: prefix + reader.result,
+                    time: Date.now(),
+                    likes: 0
+                };
+                push(ref(db, 'global_chat'), messageData);
+                toggleAttachmentMenu();
+            };
         }
 
         function formatMessage(text) {
-            if (text.startsWith('AUDIO_BASE64:')) {
-                const audioSrc = text.replace('AUDIO_BASE64:', '');
-                return `<audio src="${audioSrc}" controls></audio>`;
+            if (text.startsWith('data:audio') || text.startsWith('DATA_AUDIO:')) {
+                const src = text.replace('DATA_AUDIO:', '');
+                return `<audio src="${src}" controls></audio>`;
             }
-            // Oddiy matndagi qator tashlashlarni (\n) HTML break (<br>) ga aylantirish
-            return text.replace(/\n/g, '<br>');
+            if (text.startsWith('DATA_IMAGE:')) {
+                const src = text.replace('DATA_IMAGE:', '');
+                return `<img src="${src}" class="chat-img" alt="Rasm yuklandi">`;
+            }
+            if (text.startsWith('DATA_VIDEO:')) {
+                const src = text.replace('DATA_VIDEO:', '');
+                return `<video src="${src}" controls class="chat-video"></video>`;
+            }
+            
+            const imgRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/i;
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+            if (imgRegex.test(text)) {
+                return text.replace(imgRegex, (url) => `<img src="${url}" class="chat-img" alt="Rasm">`);
+            } else if (urlRegex.test(text)) {
+                return text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="chat-link">${url}</a>`);
+            }
+            return text;
+        }
+
+        window.setReply = function(key, sender, text) {
+            activeReplyId = key;
+            activeReplyText = text.substring(0, 40) + (text.length > 40 ? "..." : "");
+            document.getElementById('reply-preview-text').innerText = `Reply to ${sender}: ${activeReplyText}`;
+            document.getElementById('reply-bar').style.display = 'flex';
+        }
+
+        window.cancelReply = function() {
+            activeReplyId = null;
+            activeReplyText = "";
+            document.getElementById('reply-bar').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const text = document.getElementById('message-input').value;
+            if (text.trim() !== "") {
+                const messageData = {
+                    sender: currentUsername,
+                    message: text,
+                    time: Date.now(),
+                    likes: 0
+                };
+                
+                if (activeReplyId) {
+                    messageData.replyTo = activeReplyId;
+                    messageData.replyText = activeReplyText;
+                }
+
+                push(ref(db, 'global_chat'), messageData);
+                document.getElementById('message-input').value = "";
+                document.getElementById('emoji-panel').style.display = 'none';
+                cancelReply();
+            }
+        }
+
+        window.deleteMessage = function(key, elementId) {
+            if(confirm("Ushbu xabarni hamma uchun butunlay o'chirib tashlaysizmi?")) {
+                const el = document.getElementById(elementId);
+                if(el) {
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        remove(ref(db, 'global_chat/' + key));
+                    }, 250);
+                } else {
+                    remove(ref(db, 'global_chat/' + key));
+                }
+            }
+        }
+
+        window.likeMessage = function(key, currentLikes) {
+            update(ref(db, 'global_chat/' + key), { likes: (currentLikes || 0) + 1 });
         }
 
         function loadMessages() {
@@ -273,17 +319,112 @@
             onValue(ref(db, 'global_chat'), (snapshot) => {
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML = "";
-                snapshot.forEach((child) => {
-                    const val = child.val();
+                
+                snapshot.forEach((childSnapshot) => {
+                    const key = childSnapshot.key;
+                    const val = childSnapshot.val();
                     const msgDiv = document.createElement('div');
-                    msgDiv.className = val.sender === currentUsername ? 'msg my-msg' : 'msg';
-                    msgDiv.innerHTML = `<b>${val.sender}</b><div>${formatMessage(val.message)}</div>`;
+                    const elementId = "msg-" + key;
+                    
+                    msgDiv.id = elementId;
+                    const isMe = (val.sender === currentUsername);
+                    msgDiv.className = isMe ? 'msg my-msg' : 'msg';
+                    
+                    let replyMarkup = "";
+                    if (val.replyTo) {
+                        replyMarkup = `<div class="reply-box-in-msg">💬 ${val.replyText}</div>`;
+                    }
+
+                    const likesMarkup = val.likes ? `<span style="color:#ff3b30; font-weight:bold;">❤️ ${val.likes}</span>` : '';
+                    const delMarkup = isMe ? `<button class="tool-btn del-x" onclick="deleteMessage('${key}', '${elementId}')">O'chirish</button>` : '';
+
+                    let textClean = val.message.startsWith('data:') || val.message.startsWith('DATA_') ? "[Media]" : val.message;
+
+                    msgDiv.innerHTML = `
+                        ${replyMarkup}
+                        <b>${val.sender}</b>
+                        <div>${formatMessage(val.message)}</div>
+                        <div class="msg-tools">
+                            <button class="tool-btn" onclick="likeMessage('${key}', ${val.likes || 0})">❤️ Like</button>
+                            <button class="tool-btn" onclick="setReply('${key}', '${val.sender}', '${textClean}')">💬 Reply</button>
+                            ${likesMarkup}
+                            ${delMarkup}
+                        </div>
+                    `;
                     chatBox.appendChild(msgDiv);
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
-                if (!initial && snapshot.exists()) notificationSound.play().catch(()=>{});
+                
+                if (!initial && snapshot.exists()) {
+                    notificationSound.play().catch(e => {});
+                }
                 initial = false;
             });
+        }
+
+        // Yozayotganlik holati
+        document.getElementById('message-input').addEventListener('input', () => {
+            set(ref(db, 'typing/' + currentUsername), true);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                remove(ref(db, 'typing/' + currentUsername));
+            }, 2000);
+        });
+
+        document.getElementById("message-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+
+        function listenTyping() {
+            onValue(ref(db, 'typing'), (snapshot) => {
+                const typers = [];
+                snapshot.forEach(child => {
+                    if (child.key !== currentUsername) typers.push(child.key);
+                });
+                const txt = document.getElementById('typing-txt');
+                if (typers.length > 0) {
+                    txt.innerText = typers.join(', ') + (typers.length > 1 ? " lar yozmoqda..." : " yozmoqda...");
+                } else {
+                    txt.innerText = "";
+                }
+            });
+        }
+
+        window.toggleEmoji = function() {
+            const p = document.getElementById('emoji-panel');
+            p.style.display = p.style.display === 'grid' ? 'none' : 'grid';
+        }
+        window.addEmoji = function(e) { document.getElementById('message-input').value += e; }
+
+        // Ovoz yozish funksiyasi
+        window.toggleRecording = async function() {
+            const btn = document.getElementById('rec-btn');
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const r = new FileReader();
+                    r.readAsDataURL(blob);
+                    r.onloadend = () => {
+                        const messageData = { 
+                            sender: currentUsername, 
+                            message: 'DATA_AUDIO:' + r.result, 
+                            time: Date.now() 
+                        };
+                        push(ref(db, 'global_chat'), messageData);
+                    };
+                };
+                mediaRecorder.start();
+                btn.classList.add('recording');
+                btn.innerText = "🛑";
+            } else {
+                mediaRecorder.stop();
+                btn.classList.remove('recording');
+                btn.innerText = "🎙️";
+            }
         }
     </script>
 </body>
