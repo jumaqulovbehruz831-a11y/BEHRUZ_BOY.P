@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v13.0 (Admin Edition)</title>
+    <title>Cyber-X Ultra Chat v16.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
@@ -63,7 +63,6 @@
         .msg { background: #1e293b; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 70%; word-wrap: break-word; align-self: flex-start; border: 1px solid #334155; position: relative; }
         .msg.my-msg { align-self: flex-end; background: linear-gradient(135deg, #0055ff, #a307fa); border: none; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3); }
         
-        /* Admin xabari alohida ajralib turishi uchun oltin kontur */
         .msg.admin-msg-style { border: 1px solid #ffd700 !important; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
         
         .msg b { color: #00fbff; display: block; font-size: 0.85em; margin-bottom: 5px; text-transform: capitalize; }
@@ -274,20 +273,19 @@
             }
         }
 
-        /* 📎 RASM VA VIDEOLARNI ENG ISHONCHLI SERVERLARGA YUKLASH TIZIMI */
+        /* 🌐 MUTLAQ BARQAROR LINKLI YUKLASH TIZIMI (IMGBB & CATBOX) */
         window.uploadFromGalereya = function(input) {
             const file = input.files[0];
             if (!file) return;
 
             const statusText = document.getElementById('typing-txt');
-            statusText.innerText = "Fayl yuklanmoqda, iltimos kuting... ⏳";
+            statusText.innerText = "Fayl yuklanmoqda... ⏳";
 
             const formData = new FormData();
 
-            // 📸 1. AGAR FOYDALANUVCHI RASM TANLASA (IMGBB TEKOR SERVERIGA YUKLAYMIZ)
+            // 📸 AGAR RASM BO'LSA -> IMGBB SERVERIGA
             if (file.type.startsWith('image/')) {
                 formData.append('image', file);
-                // Tekin Imgbb API kaliti (Hech qachon o'chmaydi va xato bermaydi)
                 fetch('https://api.imgbb.com/1/upload?key=6d8f28bc9ef6cb90802d2bc7a3e792b0', {
                     method: 'POST',
                     body: formData
@@ -297,37 +295,35 @@
                     statusText.innerText = "";
                     if (data.success && data.data.url) {
                         sendToFirebase("IMG_URL:" + data.data.url);
-                    } else {
-                        alert("Rasm yuklashda xatolik bo'ldi. Qaytadan urinib ko'ring.");
-                    }
+                    } else { alert("Rasm yuklashda xatolik bo'ldi."); }
                     input.value = "";
                 })
                 .catch(() => {
                     statusText.innerText = "";
-                    alert("Rasm yuklashda xatolik yuz berdi.");
+                    alert("Rasm serverida xatolik yuz berdi.");
                     input.value = "";
                 });
             } 
-            // 🎬 2. AGAR FOYDALANUVCHI VIDEO TANLASA (FILE.IO SERVERIGA YUKLAYMIZ)
+            // 🎬 AGAR VIDEO BO'LSA -> CATBOX PRO SERVERIGA
             else if (file.type.startsWith('video/')) {
-                formData.append('file', file);
-                fetch('https://file.io', {
+                formData.append('reqtype', 'fileupload');
+                formData.append('fileToUpload', file);
+
+                fetch('https://catbox.moe/user/api.php', {
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.json())
-                .then(data => {
+                .then(res => res.text()) // Catbox to'g'ridan-to'g'ri URL tekst qaytaradi
+                .then(link => {
                     statusText.innerText = "";
-                    if (data.success && data.link) {
-                        sendToFirebase("VID_URL:" + data.link);
-                    } else {
-                        alert("Video hajmi juda katta yoki xatolik yuz berdi.");
-                    }
+                    if (link.startsWith('https://files.catbox.moe/')) {
+                        sendToFirebase("VID_URL:" + link.trim());
+                    } else { alert("Video yuklashda xatolik bo'ldi."); }
                     input.value = "";
                 })
                 .catch(() => {
                     statusText.innerText = "";
-                    alert("Video yuklash serverida xatolik bo'ldi.");
+                    alert("Video serverida ulanish xatoligi bo'ldi.");
                     input.value = "";
                 });
             }
@@ -371,8 +367,7 @@
         window.dislikeMsg = function(key, current) { update(ref(db, 'global_chat/' + key), { dislikes: (current || 0) + 1 }); }
 
         window.deleteMsg = function(key, elementId) {
-            if (!isAdmin) return;
-            if(confirm("Ushbu xabarni butunlay o'chirib tashlaysizmi?")) {
+            if(confirm("Ushbu xabarni o'chirib tashlaysizmi?")) {
                 const el = document.getElementById(elementId);
                 if(el) {
                     el.style.opacity = '0';
@@ -447,7 +442,11 @@
                     const likeText = val.likes ? `❤️ ${val.likes}` : '❤️ Like';
                     const dislikeText = val.dislikes ? `👎 ${val.dislikes}` : '👎 Dislike';
                     
-                    const delMarkup = isAdmin ? `<button class="tool-btn del-btn" onclick="deleteMsg('${key}', '${elementId}')">O'chirish 🗑️</button>` : '';
+                    let delMarkup = "";
+                    if (isAdmin || isMe) {
+                        delMarkup = `<button class="tool-btn del-btn" onclick="deleteMsg('${key}', '${elementId}')">O'chirish 🗑️</button>`;
+                    }
+
                     const nameMarkup = isMsgFromAdmin ? `<span class="admin-badge">${val.sender} [Admin 👑]</span>` : `<span>${val.sender}</span>`;
 
                     let cleanText = "Media kontent";
@@ -472,9 +471,4 @@
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
                 if (!initial && snapshot.exists()) notificationSound.play().catch(()=>{});
-                initial = false;
-            });
-        }
-    </script>
-</body>
-</html>
+                initial =
