@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v11.0</title>
+    <title>Cyber-X Ultra Chat v12.0 (Admin Edition)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
@@ -62,8 +62,13 @@
         /* Premium Xabar dizaynlari */
         .msg { background: #1e293b; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 70%; word-wrap: break-word; align-self: flex-start; border: 1px solid #334155; position: relative; }
         .msg.my-msg { align-self: flex-end; background: linear-gradient(135deg, #0055ff, #a307fa); border: none; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 12px rgba(0, 85, 255, 0.3); }
+        
+        /* Admin xabari alohida ajralib turishi uchun oltin kontur */
+        .msg.admin-msg-style { border: 1px solid #ffd700 !important; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        
         .msg b { color: #00fbff; display: block; font-size: 0.85em; margin-bottom: 5px; text-transform: capitalize; }
         .msg.my-msg b { color: #ffffff; opacity: 0.9; }
+        .admin-badge { color: #ffd700 !important; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
         
         /* Reply qismi xabar ichida */
         .reply-in-msg { background: rgba(0, 0, 0, 0.25); border-left: 3px solid #00fbff; padding: 6px 10px; border-radius: 4px; font-size: 0.82rem; margin-bottom: 6px; color: #cbd5e1; }
@@ -73,7 +78,7 @@
         .msg-tools { display: flex; gap: 12px; margin-top: 8px; font-size: 0.75rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
         .tool-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.75rem; padding: 0; width: auto; font-family: inherit; }
         .tool-btn:hover { color: #00fbff; text-decoration: underline; }
-        .tool-btn.del-btn { color: #f43f5e; }
+        .tool-btn.del-btn { color: #f43f5e; font-weight: bold; }
 
         /* Reply Preview paneli */
         .reply-preview-bar { display: none; background: #1e293b; padding: 10px 15px; border-radius: 12px; justify-content: space-between; align-items: center; border-left: 4px solid #00fbff; margin-bottom: 5px; }
@@ -114,7 +119,7 @@
         <input type="text" id="user-name" placeholder="Ismingiz...">
         <input type="password" id="chat-pass" placeholder="Xavfsizlik kodi...">
         <button class="enter-btn" onclick="checkAccess()">Tizimni Yoqish</button>
-        <p id="error" style="color: #ef4444; display: none; margin-top: 15px; font-weight: bold;">Noto'g'ri kod!</p>
+        <p id="error" style="color: #ef4444; display: none; margin-top: 15px; font-weight: bold;">Noto'g'ri ism yoki maxfiy kod!</p>
     </div>
 
     <div id="chat-container">
@@ -122,14 +127,14 @@
             <div class="header-main">
                 <div class="status-box">
                     <div class="online-dot"></div>
-                    <div class="header-title">CYBER GLOBAL CORE</div>
+                    <div class="header-title" id="core-title">CYBER GLOBAL CORE</div>
                 </div>
                 <div class="typing-status" id="typing-txt"></div>
                 <div class="voice-rec-status" id="voice-status">🎙️ Ovoz yozilmoqda...</div>
             </div>
             
             <div class="header-buttons">
-                <button class="bg-menu-btn" style="background: #f43f5e; color: white; border-color: #f43f5e;" onclick="clearAllMessages()">Tozalash 🗑️</button>
+                <button id="admin-clear-btn" class="bg-menu-btn" style="background: #f43f5e; color: white; border-color: #f43f5e; display: none;" onclick="clearAllMessages()">Tozalash 🗑️</button>
                 <button class="bg-menu-btn" onclick="toggleBgMenu()">Fonlar 🖼️</button>
             </div>
             
@@ -193,10 +198,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const SECRET_CODE = "2026";
-        const CLEAR_CODE = "3102";
+        const USER_CODE = "2026";
+        const ADMIN_CODE = "3102";
         
         let currentUsername = "";
+        let isAdmin = false; // Admin statusini tekshirish uchun o'zgaruvchi
         let mediaRecorder;
         let audioChunks = [];
         let activeReplyId = null;
@@ -204,16 +210,30 @@
         const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2357/2357-84.wav');
 
         window.checkAccess = function() {
-            if (document.getElementById('chat-pass').value === SECRET_CODE && document.getElementById('user-name').value.trim() !== "") {
-                currentUsername = document.getElementById('user-name').value.trim();
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('chat-container').style.display = 'flex';
-                const savedBg = localStorage.getItem('cyber_chat_bg');
-                if (savedBg) document.getElementById('chat-container').style.backgroundImage = `url('${savedBg}')`;
-                loadMessages();
+            const inputName = document.getElementById('user-name').value.trim();
+            const inputPass = document.getElementById('chat-pass').value.trim();
+
+            // 👑 ADMIN TEKSHIRUVI: Ism "Behruz" va parol "3102" bo'lsa
+            if (inputName.toLowerCase() === "behruz" && inputPass === ADMIN_CODE) {
+                currentUsername = "Behruz";
+                isAdmin = true;
+                document.getElementById('admin-clear-btn').style.display = 'block'; // Admin tozalash tugmasini yoqish
+                document.getElementById('core-title').innerHTML = "CYBER CORE <span style='color:#ffd700; font-size:0.8rem;'>[ADMIN PANEL]</span>";
+            } 
+            // 👤 ODDIY FOYDALANUVCHILAR TEKSHIRUVI
+            else if (inputName !== "" && inputPass === USER_CODE) {
+                currentUsername = inputName;
+                isAdmin = false;
             } else {
                 document.getElementById('error').style.display = 'block';
+                return;
             }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'flex';
+            const savedBg = localStorage.getItem('cyber_chat_bg');
+            if (savedBg) document.getElementById('chat-container').style.backgroundImage = `url('${savedBg}')`;
+            loadMessages();
         }
 
         window.toggleBgMenu = function() {
@@ -256,19 +276,16 @@
             }
         }
 
-        /* 📎 GALEREYADAN TANLANGAN RASM YOKI VIDEONI SERVERGA YUKLASH FUNKSIYASI */
         window.uploadFromGalereya = function(input) {
             const file = input.files[0];
             if (!file) return;
 
-            // Chatda yuklanyapti degan vizual status ko'rsatish
-            document.getElementById('typing-txt').innerText = "Fayl yuklanmoqda, iltimos kuting...";
+            document.getElementById('typing-txt').innerText = "Fayl yuklanmoqda...";
 
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('upload_preset', 'ml_default'); // Global tekin va tezkor yuklash tizimi
+            formData.append('upload_preset', 'ml_default');
 
-            // Faylni vaqtinchalik saqlash va to'g'ridan-to'g'ri havola (URL) olish uchun Cloudinary API ishlatamiz
             fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, {
                 method: 'POST',
                 body: formData
@@ -282,14 +299,12 @@
                     } else if (file.type.startsWith('video/')) {
                         sendToFirebase("VID_URL:" + data.secure_url);
                     }
-                } else {
-                    alert("Fayl yuklashda xatolik bo'ldi.");
-                }
-                input.value = ""; // Inputni tozalash
+                } else { alert("Yuklashda xato!"); }
+                input.value = "";
             })
             .catch(err => {
                 document.getElementById('typing-txt').innerText = "";
-                alert("Server bilan aloqa uzildi. Internetni tekshiring.");
+                alert("Xatolik yuz berdi.");
                 input.value = "";
             });
         }
@@ -300,7 +315,14 @@
         }
 
         function sendToFirebase(content) {
-            const msgData = { sender: currentUsername, message: content, time: Date.now(), likes: 0, dislikes: 0 };
+            const msgData = { 
+                sender: currentUsername, 
+                message: content, 
+                time: Date.now(), 
+                likes: 0, 
+                dislikes: 0,
+                role: isAdmin ? "admin" : "user" // Xabarni kim yozganini bazada saqlash
+            };
             if (activeReplyId) {
                 msgData.replyTo = activeReplyId;
                 msgData.replyText = activeReplyText;
@@ -324,8 +346,13 @@
         window.likeMsg = function(key, current) { update(ref(db, 'global_chat/' + key), { likes: (current || 0) + 1 }); }
         window.dislikeMsg = function(key, current) { update(ref(db, 'global_chat/' + key), { dislikes: (current || 0) + 1 }); }
 
+        // 🗑️ XABARNI O'CHIRISH (FAQAT ADMINGA RUXSAT)
         window.deleteMsg = function(key, elementId) {
-            if(confirm("Ushbu xabarni o'chirasizmi?")) {
+            if (!isAdmin) {
+                alert("Siz admin emassiz! Xabarlarni o'chira olmaysiz.");
+                return;
+            }
+            if(confirm("Ushbu xabarni butunlay o'chirib tashlaysizmi?")) {
                 const el = document.getElementById(elementId);
                 if(el) {
                     el.style.opacity = '0';
@@ -334,12 +361,11 @@
             }
         }
 
+        // 👑 BAZANI TOZALASH (FAQAT ADMINGA RUXSAT)
         window.clearAllMessages = function() {
-            if(confirm("DIQQAT: Hamma xabarlarni o'chirmoqchimisiz?")) {
-                const password = prompt("Tozalash paroli:");
-                if(password === CLEAR_CODE) {
-                    remove(ref(db, 'global_chat')).then(() => { alert("Baza tozalandi!"); });
-                } else { alert("Xato kod!"); }
+            if (!isAdmin) return;
+            if(confirm("DIQQAT ADMIN: Chatdagi barcha xabarlarni butunlay o'chirib yubormoqchimisiz?")) {
+                remove(ref(db, 'global_chat')).then(() => { alert("Baza top-toza qilindi, boshliq!"); });
             }
         }
 
@@ -368,21 +394,11 @@
         }
 
         function formatMessage(text) {
-            if (text.startsWith('TEXT:')) {
-                return text.replace('TEXT:', '').replace(/\n/g, '<br>');
-            }
-            if (text.startsWith('IMG_URL:')) {
-                return `<img src="${text.replace('IMG_URL:', '')}" class="chat-img" onclick="window.open(this.src)">`;
-            }
-            if (text.startsWith('VID_URL:')) {
-                return `<video src="${text.replace('VID_URL:', '')}" class="chat-video" controls></video>`;
-            }
-            if (text.startsWith('STIKER_EMOJI:')) {
-                return `<span style="font-size: 3.5rem; display:block; margin:5px 0; user-select:none;">${text.replace('STIKER_EMOJI:', '')}</span>`;
-            }
-            if (text.startsWith('AUDIO_BASE64:')) {
-                return `<audio src="${text.replace('AUDIO_BASE64:', '')}" controls></audio>`;
-            }
+            if (text.startsWith('TEXT:')) return text.replace('TEXT:', '').replace(/\n/g, '<br>');
+            if (text.startsWith('IMG_URL:')) return `<img src="${text.replace('IMG_URL:', '')}" class="chat-img" onclick="window.open(this.src)">`;
+            if (text.startsWith('VID_URL:')) return `<video src="${text.replace('VID_URL:', '')}" class="chat-video" controls></video>`;
+            if (text.startsWith('STIKER_EMOJI:')) return `<span style="font-size: 3.5rem; display:block; margin:5px 0; user-select:none;">${text.replace('STIKER_EMOJI:', '')}</span>`;
+            if (text.startsWith('AUDIO_BASE64:')) return `<audio src="${text.replace('AUDIO_BASE64:', '')}" controls></audio>`;
             return text.replace(/\n/g, '<br>');
         }
 
@@ -398,15 +414,26 @@
                     const elementId = "msg-" + key;
                     const msgDiv = document.createElement('div');
                     msgDiv.id = elementId;
+                    
                     const isMe = (val.sender === currentUsername);
-                    msgDiv.className = isMe ? 'msg my-msg' : 'msg';
+                    const isMsgFromAdmin = (val.role === "admin");
+                    
+                    // Klaslarni sozlash
+                    let classes = isMe ? 'msg my-msg' : 'msg';
+                    if (isMsgFromAdmin) classes += ' admin-msg-style';
+                    msgDiv.className = classes;
                     
                     let replyMarkup = "";
                     if (val.replyTo) replyMarkup = `<div class="reply-in-msg">💬 ${val.replyText}</div>`;
 
                     const likeText = val.likes ? `❤️ ${val.likes}` : '❤️ Like';
                     const dislikeText = val.dislikes ? `👎 ${val.dislikes}` : '👎 Dislike';
-                    const delMarkup = isMe ? `<button class="tool-btn del-btn" onclick="deleteMsg('${key}', '${elementId}')">O'chirish</button>` : '';
+                    
+                    // 👑 O'CHIRISH TUGMASI FAQAT ADMIN KORGANIDAGINA HAMMA XABARDA CHIQADI
+                    const delMarkup = isAdmin ? `<button class="tool-btn del-btn" onclick="deleteMsg('${key}', '${elementId}')">O'chirish 🗑️</button>` : '';
+
+                    // Ism yoniga [Admin 👑] belgisini qo'shish
+                    const nameMarkup = isMsgFromAdmin ? `<span class="admin-badge">${val.sender} [Admin 👑]</span>` : `<span>${val.sender}</span>`;
 
                     let cleanText = "Media kontent";
                     if(val.message.startsWith('TEXT:')) cleanText = val.message.replace('TEXT:','');
@@ -417,7 +444,7 @@
 
                     msgDiv.innerHTML = `
                         ${replyMarkup}
-                        <b>${val.sender}</b>
+                        <b>${nameMarkup}</b>
                         <div>${formatMessage(val.message)}</div>
                         <div class="msg-tools">
                             <button class="tool-btn" onclick="likeMsg('${key}', ${val.likes || 0})">${likeText}</button>
