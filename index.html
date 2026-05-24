@@ -3,89 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Premium Chat</title>
+    <title>Cyber-X Space Chat v4.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #000000; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #030712; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
         
         /* Kirish oynasi */
-        #login-screen { background: #121212; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #262626; width: 90%; max-width: 400px; }
-        .insta-logo { font-style: italic; font-size: 2.2rem; font-weight: bold; margin-bottom: 30px; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        input { padding: 14px; border-radius: 8px; border: 1px solid #363636; margin: 8px 0; width: 100%; background: #1c1c1e; color: white; outline: none; font-size: 0.95rem; }
-        input:focus { border-color: #a307fa; }
-        button { padding: 14px 25px; border-radius: 8px; border: none; background: #0095f6; color: white; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.95rem; transition: 0.2s; }
-        button:hover { background: #1877f2; }
+        #login-screen { background: rgba(10, 15, 30, 0.95); padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 0 40px rgba(0, 251, 255, 0.25); border: 1px solid #00fbff; width: 90%; max-width: 400px; animation: zoomIn 0.3s ease-out; }
+        h2 { font-size: 2rem; margin-bottom: 25px; color: #00fbff; text-shadow: 0 0 15px rgba(0, 251, 255, 0.4); letter-spacing: 2px; font-weight: 900; }
+        input { padding: 14px 18px; border-radius: 12px; border: 1px solid #1f2d4a; margin: 10px 0; width: 100%; background: #0f172a; color: white; outline: none; transition: 0.3s; font-size: 1rem; }
+        input:focus { border-color: #00fbff; box-shadow: 0 0 12px rgba(0, 251, 255, 0.3); }
+        .enter-btn { padding: 14px; border-radius: 12px; border: none; background: linear-gradient(45deg, #0055ff, #00fbff); color: white; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4); }
         
-        /* Chat interfeysi */
-        #chat-container { display: none; width: 100%; max-width: 600px; height: 95vh; background: #000000; flex-direction: column; border-radius: 20px; overflow: hidden; border: 1px solid #262626; position: relative; background-size: cover; background-position: center; }
+        /* Chat tuzilishi */
+        #chat-container { display: none; width: 100%; max-width: 850px; height: 95vh; background: #090d16; flex-direction: column; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 1px solid #1e293b; position: relative; background-size: cover; background-position: center; transition: background 0.5s ease; }
         
-        /* Instagram uslubidagi Header */
-        #chat-header { background: rgba(0, 0, 0, 0.85); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #262626; backdrop-filter: blur(10px); z-index: 5; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .online-dot { width: 10px; height: 10px; background: #4cd964; border-radius: 50%; box-shadow: 0 0 8px #4cd964; }
-        .header-title { font-weight: 600; font-size: 1.1rem; }
+        /* Header paneli */
+        #chat-header { background: rgba(15, 23, 42, 0.85); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; backdrop-filter: blur(20px); z-index: 10; }
+        .header-main { display: flex; flex-direction: column; gap: 2px; }
+        .status-box { display: flex; align-items: center; gap: 8px; }
+        .online-dot { width: 10px; height: 10px; background: #39ff14; border-radius: 50%; box-shadow: 0 0 10px #39ff14; }
+        .typing-status { font-size: 0.8rem; color: #00fbff; font-style: italic; min-height: 18px; }
         
-        /* Orqa fonni o'zgartirish tugmasi */
-        .bg-btn { background: #262626; color: #fff; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; width: auto; font-weight: 500; }
+        /* Fonlar galereyasi paneli */
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .bg-menu-btn { background: #1e293b; color: #00fbff; padding: 10px 16px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; border: 1px solid #334155; cursor: pointer; }
+        #bg-gallery { display: none; position: absolute; top: 75px; right: 25px; background: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 16px; width: 280px; grid-template-columns: repeat(2, 1fr); gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 20; }
+        .bg-thumb { height: 70px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; transition: 0.2s; position: relative; }
+        .bg-thumb:hover { border-color: #00fbff; transform: scale(1.05); }
+        .bg-thumb span { position: absolute; bottom: 2px; left: 4px; font-size: 0.65rem; background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 4px; }
+
+        /* Xabarlar oynasi */
+        #chat-box { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; background: rgba(3, 7, 18, 0.2); }
         
-        /* Chat xabarlar oynasi */
-        #chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; background: rgba(0, 0, 0, 0.2); }
+        /* Premium Xabar dizaynlari */
+        .msg { background: #1e293b; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 70%; word-wrap: break-word; align-self: flex-start; border: 1px solid #334155; position: relative; animation: slideUp 0.2s forwards; }
+        .msg.my-msg { align-self: flex-end; background: linear-gradient(135deg, #0055ff, #0099ff); border: none; border-radius: 16px 16px 4px 16px; }
+        .msg b { color: #00fbff; display: block; font-size: 0.85em; margin-bottom: 5px; text-transform: capitalize; }
+        .msg.my-msg b { color: #ffffff; opacity: 0.9; }
         
-        /* Instagram xabarlar dizayni */
-        .msg { padding: 12px 16px; border-radius: 20px; max-width: 70%; word-wrap: break-word; align-self: flex-start; background: #262626; position: relative; animation: pop 0.2s ease-out; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .msg.my-msg { align-self: flex-end; background: linear-gradient(45deg, #b224ef, #7579ff); }
-        .msg b { display: block; font-size: 0.75em; opacity: 0.6; margin-bottom: 3px; }
+        /* Reply (Javob berilgan xabar) ko'rinishi */
+        .reply-box-in-msg { background: rgba(0, 0, 0, 0.2); border-left: 3px solid #00fbff; padding: 6px 10px; border-radius: 4px; font-size: 0.82rem; margin-bottom: 6px; color: #cbd5e1; }
+        .msg.my-msg .reply-box-in-msg { border-left-color: #fff; background: rgba(255,255,255,0.15); color: #fff; }
+
+        /* Kamera Oynasi */
+        #camera-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+        #video-preview { width: 90%; max-width: 500px; border-radius: 16px; border: 2px solid #00fbff; background: #000; }
+
+        /* Pastki boshqaruv maydoni */
+        #input-area { padding: 20px; background: #090d16; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #1e293b; z-index: 10; }
+        .reply-preview-bar { display: none; background: #1e293b; padding: 10px 15px; border-radius: 10px; justify-content: space-between; align-items: center; border-left: 4px solid #00fbff; }
+        .controls-row { display: flex; gap: 10px; width: 100%; align-items: center; position: relative; }
         
-        /* Instagram funksiyalari (Layk va O'chirish) */
-        .msg-actions { display: flex; gap: 10px; margin-top: 5px; font-size: 0.75rem; opacity: 0.7; }
-        .like-btn { cursor: pointer; color: #ff3b30; background: none; border: none; width: auto; padding: 0; display: inline; font-size: 0.8rem; }
-        .del-btn { cursor: pointer; color: #8e8e93; background: none; border: none; width: auto; padding: 0; display: inline; }
-        .likes-count { color: #ff3b30; font-weight: bold; margin-left: 2px; }
+        #message-input { flex: 1; margin: 0; border-radius: 14px; background: #0f172a; border: 1px solid #1e293b; padding: 14px 20px; }
+        .action-btn { width: auto; padding: 12px 15px; background: #1e293b; border: 1px solid #334155; font-size: 1.2rem; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { border-color: #00fbff; background: #0f172a; }
+        #rec-btn.recording { background: #ef4444; color: white; animation: pulseRecord 1s infinite; }
         
+        /* Xabar tugmalari (Like, Reply, Delete) */
+        .msg-tools { display: flex; gap: 12px; margin-top: 8px; font-size: 0.75rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
+        .tool-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.75rem; padding: 0; width: auto; }
+        .tool-btn:hover { color: #00fbff; text-decoration: underline; }
+        .tool-btn.del-x { color: #f43f5e; }
+
+        #emoji-panel { display: none; position: absolute; bottom: 85px; left: 0; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 12px; grid-template-columns: repeat(6, 1fr); gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 30; }
+        #emoji-panel span { cursor: pointer; font-size: 1.3rem; transition: 0.15s; text-align: center; display: block; }
+        #emoji-panel span:hover { transform: scale(1.25); }
+
         /* Multimedia elementlari */
-        .chat-img { max-width: 100%; max-height: 250px; border-radius: 12px; margin-top: 5px; display: block; border: 1px solid #363636; }
-        .chat-link { color: #0095f6; text-decoration: none; word-break: break-all; }
-        .msg.my-msg .chat-link { color: #fff; text-decoration: underline; }
-        audio { margin-top: 5px; max-width: 100%; filter: invert(1); }
+        .chat-img { max-width: 100%; max-height: 260px; border-radius: 12px; margin-top: 6px; display: block; border: 1px solid rgba(255,255,255,0.1); }
+        .chat-link { color: #00fbff; text-decoration: underline; font-weight: 600; }
+        audio { margin-top: 6px; max-width: 100%; outline: none; }
 
-        /* Pastki yozish qismi */
-        #input-area { padding: 15px 20px; background: rgba(0, 0, 0, 0.95); display: flex; gap: 10px; border-top: 1px solid #262626; align-items: center; }
-        #message-input { flex: 1; margin: 0; border-radius: 25px; padding: 12px 20px; border: 1px solid #363636; background: #000; }
-        .action-btn { width: auto; background: none; font-size: 1.3rem; padding: 5px; }
-        #send-btn { width: auto; color: #0095f6; background: none; font-size: 1rem; padding: 5px 10px; text-transform: none; }
-        #rec-btn.recording { color: #ff3b30; animation: blink 1s infinite; }
-
-        @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes blink { 50% { opacity: 0.5; } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseRecord { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="insta-logo">Instagram Direct</div>
-        <input type="text" id="user-name" placeholder="Foydalanuvchi nomi...">
-        <input type="password" id="chat-pass" placeholder="Parol...">
-        <button onclick="checkAccess()">Kirish</button>
-        <p id="error" style="color: #ff3b30; display: none; margin-top: 15px; font-size: 0.9rem;">Parol noto'g'ri!</p>
+        <h2>CYBER-X NETWORK</h2>
+        <input type="text" id="user-name" placeholder="Ismingiz...">
+        <input type="password" id="chat-pass" placeholder="Xavfsizlik kodi...">
+        <button class="enter-btn" onclick="checkAccess()">Tizimni Yoqish</button>
+        <p id="error" style="color: #ef4444; display: none; margin-top: 15px; font-weight: bold;">Xavfsizlik paroli noto'g'ri!</p>
+    </div>
+
+    <div id="camera-modal">
+        <video id="video-preview" autoplay playsinline></video>
+        <div style="display: flex; gap: 15px;">
+            <button style="width:auto; background:#10b981; padding:12px 25px;" onclick="takePhoto()">Rasmga olish 📸</button>
+            <button style="width:auto; background:#ef4444; padding:12px 25px;" onclick="closeCamera()">Yopish ❌</button>
+        </div>
     </div>
 
     <div id="chat-container">
         <div id="chat-header">
-            <div class="user-info">
-                <div class="online-dot"></div>
-                <div class="header-title">Do'stlar Guruhi</div>
+            <div class="header-main">
+                <div class="status-box">
+                    <div class="online-dot"></div>
+                    <div class="header-title">CYBER GLOBAL CORE</div>
+                </div>
+                <div class="typing-status" id="typing-txt"></div>
             </div>
-            <button class="bg-btn" onclick="changeBackground()">Fonni o'zgartirish 🖼️</button>
+            
+            <div class="header-actions">
+                <button class="bg-menu-btn" onclick="toggleBgMenu()">Mavzular (Fon) 🖼️</button>
+                
+                <div id="bg-gallery">
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600')"><span>BMW Neon</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600')"><span>Stadium</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600')"><span>Cyberpunk</span></div>
+                    <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=600')"><span>Cosmos</span></div>
+                </div>
+            </div>
         </div>
         
         <div id="chat-box"></div>
+        
+        <div id="emoji-panel">
+            <span onclick="addEmoji('😀')">😀</span><span onclick="addEmoji('😂')">😂</span><span onclick="addEmoji('🔥')">🔥</span>
+            <span onclick="addEmoji('👍')">👍</span><span onclick="addEmoji('❤️')">❤️</span><span onclick="addEmoji('😎')">😎</span>
+            <span onclick="addEmoji('👑')">👑</span><span onclick="addEmoji('🚀')">🚀</span><span onclick="addEmoji('🚗')">🚗</span>
+            <span onclick="addEmoji('💻')">💻</span><span onclick="addEmoji('🤫')">🤫</span><span onclick="addEmoji('🎯')">🎯</span>
+        </div>
 
         <div id="input-area">
-            <button class="action-btn" id="rec-btn" onclick="toggleRecording()">🎙️</button>
-            <input type="text" id="message-input" placeholder="Xabar yozing...">
-            <button id="send-btn" onclick="sendMessage()">Yuborish</button>
+            <div class="reply-preview-bar" id="reply-bar">
+                <div id="reply-preview-text" style="font-size:0.85rem; color:#cbd5e1;"></div>
+                <span style="cursor:pointer; color:#ef4444; font-weight:bold;" onclick="cancelReply()">❌</span>
+            </div>
+            
+            <div class="controls-row">
+                <button class="action-btn" onclick="toggleEmoji()">😊</button>
+                <button class="action-btn" onclick="openCamera()">📸</button>
+                <button class="action-btn" id="rec-btn" onclick="toggleRecording()">🎙️</button>
+                <input type="text" id="message-input" placeholder="Xabar yozing...">
+                <button style="width: auto; padding: 14px 24px; border-radius:14px;" onclick="sendMessage()">Yuborish</button>
+            </div>
         </div>
     </div>
 
@@ -106,6 +162,11 @@
         let currentUsername = "";
         let mediaRecorder;
         let audioChunks = [];
+        let activeReplyId = null;
+        let activeReplyText = "";
+        let typingTimeout;
+        let localStream;
+        const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2357/2357-84.wav');
 
         function checkAccess() {
             const pass = document.getElementById('chat-pass').value;
@@ -115,29 +176,64 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('chat-container').style.display = 'flex';
                 
-                // Saqlangan fonni yuklash
-                const savedBg = localStorage.getItem('chat_bg');
+                const savedBg = localStorage.getItem('cyber_v4_bg');
                 if(savedBg) document.getElementById('chat-container').style.backgroundImage = `url('${savedBg}')`;
                 
                 loadMessages();
+                listenTyping();
             } else {
                 document.getElementById('error').style.display = 'block';
             }
         }
 
-        // Fon rasmini o'zgartirish funksiyasi
-        function changeBackground() {
-            const bgUrl = prompt("Orqa fon uchun rasm linkini (URL) kiriting:\n(Masalan, Google'dan biror chiroyli BMW yoki neon rasm havolasi)");
-            if (bgUrl) {
-                document.getElementById('chat-container').style.backgroundImage = `url('${bgUrl}')`;
-                localStorage.setItem('chat_bg', bgUrl); // Brauzer eslab qolishi uchun
+        function toggleBgMenu() {
+            const menu = document.getElementById('bg-gallery');
+            menu.style.display = menu.style.display === 'grid' ? 'none' : 'grid';
+        }
+
+        function setBg(url) {
+            document.getElementById('chat-container').style.backgroundImage = `url('${url}')`;
+            localStorage.setItem('cyber_v4_bg', url);
+            toggleBgMenu();
+        }
+
+        // Kamera funksiyalari
+        async function openCamera() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('video-preview').srcObject = localStream;
+                document.getElementById('camera-modal').style.display = 'flex';
+            } catch (e) { alert("Kameraga ruxsat berilmadi!"); }
+        }
+
+        function closeCamera() {
+            if(localStream) {
+                localStream.getTracks().forEach(track => track.stop());
             }
+            document.getElementById('camera-modal').style.display = 'none';
+        }
+
+        function takePhoto() {
+            const video = document.getElementById('video-preview');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            db.ref('global_chat').push().set({
+                sender: currentUsername,
+                message: dataUrl, // Rasm bazaga Base64 ko'rinishida ketadi
+                time: Date.now()
+            });
+            closeCamera();
         }
 
         function formatMessage(text) {
-            if (text.startsWith('data:audio')) {
-                return `<audio src="${text}" controls></audio>`;
-            }
+            if (text.startsWith('data:audio')) return `<audio src="${text}" controls></audio>`;
+            if (text.startsWith('data:image')) return `<img src="${text}" class="chat-img" alt="Kamera rasmi">`;
+            
             const imgRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/i;
             const urlRegex = /(https?:\/\/[^\s]+)/g;
 
@@ -149,31 +245,53 @@
             return text;
         }
 
+        function setReply(key, sender, text) {
+            activeReplyId = key;
+            activeReplyText = text.substring(0, 40) + (text.length > 40 ? "..." : "");
+            document.getElementById('reply-preview-text').innerText = `Reply to ${sender}: ${activeReplyText}`;
+            document.getElementById('reply-bar').style.display = 'flex';
+        }
+
+        function cancelReply() {
+            activeReplyId = null;
+            activeReplyText = "";
+            document.getElementById('reply-bar').style.display = 'none';
+        }
+
         function sendMessage() {
             const text = document.getElementById('message-input').value;
             if (text.trim() !== "") {
-                db.ref('global_chat').push().set({
+                const messageData = {
                     sender: currentUsername,
                     message: text,
                     time: Date.now(),
                     likes: 0
-                });
+                };
+                
+                if (activeReplyId) {
+                    messageData.replyTo = activeReplyId;
+                    messageData.replyText = activeReplyText;
+                }
+
+                db.ref('global_chat').push().set(messageData);
                 document.getElementById('message-input').value = "";
+                document.getElementById('emoji-panel').style.display = 'none';
+                cancelReply();
             }
         }
 
         function deleteMessage(key) {
-            if(confirm("Ushbu xabarni o'chirishni xohlaysizmi?")) {
+            if(confirm("Ushbu xabarni hamma uchun o'chirib tashlaysizmi?")) {
                 db.ref('global_chat/' + key).remove();
             }
         }
 
         function likeMessage(key, currentLikes) {
-            const likes = currentLikes ? currentLikes + 1 : 1;
-            db.ref('global_chat/' + key).update({ likes: likes });
+            db.ref('global_chat/' + key).update({ likes: (currentLikes || 0) + 1 });
         }
 
         function loadMessages() {
+            let initial = true;
             db.ref('global_chat').on('value', (snapshot) => {
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML = "";
@@ -186,57 +304,97 @@
                     const isMe = (val.sender === currentUsername);
                     msgDiv.className = isMe ? 'msg my-msg' : 'msg';
                     
-                    const likesCount = val.likes ? `<span class="likes-count">❤️ ${val.likes}</span>` : '';
-                    const deleteOption = isMe ? `<button class="del-btn" onclick="deleteMessage('${key}')">O'chirish</button>` : '';
+                    let replyMarkup = "";
+                    if (val.replyTo) {
+                        replyMarkup = `<div class="reply-box-in-msg">💬 ${val.replyText}</div>`;
+                    }
+
+                    const likesMarkup = val.likes ? `<span style="color:#ff3b30; font-weight:bold;">❤️ ${val.likes}</span>` : '';
+                    const delMarkup = isMe ? `<button class="tool-btn del-x" onclick="deleteMessage('${key}')">O'chirish</button>` : '';
+
+                    // Rasmli yoki audoli xabarlar reply bo'lganda ko'rinishi uchun tozalash
+                    let textClean = val.message.startsWith('data:') ? "[Media]" : val.message;
 
                     msgDiv.innerHTML = `
+                        ${replyMarkup}
                         <b>${val.sender}</b>
                         <div>${formatMessage(val.message)}</div>
-                        <div class="msg-actions">
-                            <button class="like-btn" onclick="likeMessage('${key}', ${val.likes || 0})">❤️ Like</button>
-                            ${likesCount}
-                            ${deleteOption}
+                        <div class="msg-tools">
+                            <button class="tool-btn" onclick="likeMessage('${key}', ${val.likes || 0})">❤️ Like</button>
+                            <button class="tool-btn" onclick="setReply('${key}', '${val.sender}', '${textClean}')">💬 Reply</button>
+                            ${likesMarkup}
+                            ${delMarkup}
                         </div>
                     `;
-                    
                     chatBox.appendChild(msgDiv);
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
+                
+                if (!initial && snapshot.exists()) {
+                    notificationSound.play().catch(e => {});
+                }
+                initial = false;
             });
         }
 
+        // Typing funksiyasi
+        document.getElementById('message-input').addEventListener('input', () => {
+            db.ref('typing/' + currentUsername).set(true);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                db.ref('typing/' + currentUsername).remove();
+            }, 2000);
+        });
+
+        function listenTyping() {
+            db.ref('typing').on('value', (snapshot) => {
+                const typers = [];
+                snapshot.forEach(child => {
+                    if (child.key !== currentUsername) typers.push(child.key);
+                });
+                const txt = document.getElementById('typing-txt');
+                if (typers.length > 0) {
+                    txt.innerText = typers.join(', ') + (typers.length > 1 ? " lar yozmoqda..." : " yozmoqda...");
+                } else {
+                    txt.innerText = "";
+                }
+            });
+        }
+
+        function toggleEmoji() {
+            const p = document.getElementById('emoji-panel');
+            p.style.display = p.style.display === 'grid' ? 'none' : 'grid';
+        }
+        function addEmoji(e) { document.getElementById('message-input').value += e; }
+
+        // Voice
         async function toggleRecording() {
-            const recBtn = document.getElementById('rec-btn');
+            const btn = document.getElementById('rec-btn');
             if (!mediaRecorder || mediaRecorder.state === "inactive") {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                 mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-                    const reader = new FileReader();
-                    reader.readAsDataURL(audioBlob);
-                    reader.onloadend = () => {
-                        db.ref('global_chat').push().set({
-                            sender: currentUsername,
-                            message: reader.result,
-                            time: Date.now(),
-                            likes: 0
-                        });
+                    const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const r = new FileReader();
+                    r.readAsDataURL(blob);
+                    r.onloadend = () => {
+                        db.ref('global_chat').push().set({ sender: currentUsername, message: r.result, time: Date.now() });
                     };
                 };
                 mediaRecorder.start();
-                recBtn.classList.add('recording');
-                recBtn.innerText = "🛑";
+                btn.classList.add('recording');
+                btn.innerText = "🛑";
             } else {
                 mediaRecorder.stop();
-                recBtn.classList.remove('recording');
-                recBtn.innerText = "🎙️";
+                btn.classList.remove('recording');
+                btn.innerText = "🎙️";
             }
         }
 
-        document.getElementById("message-input").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") sendMessage();
+        document.getElementById("message-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
         });
     </script>
 </body>
