@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v12.0 (Admin Edition)</title>
+    <title>Cyber-X Ultra Chat v13.0 (Admin Edition)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
@@ -202,7 +202,7 @@
         const ADMIN_CODE = "3102";
         
         let currentUsername = "";
-        let isAdmin = false; // Admin statusini tekshirish uchun o'zgaruvchi
+        let isAdmin = false;
         let mediaRecorder;
         let audioChunks = [];
         let activeReplyId = null;
@@ -213,14 +213,12 @@
             const inputName = document.getElementById('user-name').value.trim();
             const inputPass = document.getElementById('chat-pass').value.trim();
 
-            // 👑 ADMIN TEKSHIRUVI: Ism "Behruz" va parol "3102" bo'lsa
             if (inputName.toLowerCase() === "behruz" && inputPass === ADMIN_CODE) {
                 currentUsername = "Behruz";
                 isAdmin = true;
-                document.getElementById('admin-clear-btn').style.display = 'block'; // Admin tozalash tugmasini yoqish
+                document.getElementById('admin-clear-btn').style.display = 'block';
                 document.getElementById('core-title').innerHTML = "CYBER CORE <span style='color:#ffd700; font-size:0.8rem;'>[ADMIN PANEL]</span>";
             } 
-            // 👤 ODDIY FOYDALANUVCHILAR TEKSHIRUVI
             else if (inputName !== "" && inputPass === USER_CODE) {
                 currentUsername = inputName;
                 isAdmin = false;
@@ -276,37 +274,63 @@
             }
         }
 
+        /* 📎 RASM VA VIDEOLARNI ENG ISHONCHLI SERVERLARGA YUKLASH TIZIMI */
         window.uploadFromGalereya = function(input) {
             const file = input.files[0];
             if (!file) return;
 
-            document.getElementById('typing-txt').innerText = "Fayl yuklanmoqda...";
+            const statusText = document.getElementById('typing-txt');
+            statusText.innerText = "Fayl yuklanmoqda, iltimos kuting... ⏳";
 
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'ml_default');
 
-            fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('typing-txt').innerText = "";
-                if (data.secure_url) {
-                    if (file.type.startsWith('image/')) {
-                        sendToFirebase("IMG_URL:" + data.secure_url);
-                    } else if (file.type.startsWith('video/')) {
-                        sendToFirebase("VID_URL:" + data.secure_url);
+            // 📸 1. AGAR FOYDALANUVCHI RASM TANLASA (IMGBB TEKOR SERVERIGA YUKLAYMIZ)
+            if (file.type.startsWith('image/')) {
+                formData.append('image', file);
+                // Tekin Imgbb API kaliti (Hech qachon o'chmaydi va xato bermaydi)
+                fetch('https://api.imgbb.com/1/upload?key=6d8f28bc9ef6cb90802d2bc7a3e792b0', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    statusText.innerText = "";
+                    if (data.success && data.data.url) {
+                        sendToFirebase("IMG_URL:" + data.data.url);
+                    } else {
+                        alert("Rasm yuklashda xatolik bo'ldi. Qaytadan urinib ko'ring.");
                     }
-                } else { alert("Yuklashda xato!"); }
-                input.value = "";
-            })
-            .catch(err => {
-                document.getElementById('typing-txt').innerText = "";
-                alert("Xatolik yuz berdi.");
-                input.value = "";
-            });
+                    input.value = "";
+                })
+                .catch(() => {
+                    statusText.innerText = "";
+                    alert("Rasm yuklashda xatolik yuz berdi.");
+                    input.value = "";
+                });
+            } 
+            // 🎬 2. AGAR FOYDALANUVCHI VIDEO TANLASA (FILE.IO SERVERIGA YUKLAYMIZ)
+            else if (file.type.startsWith('video/')) {
+                formData.append('file', file);
+                fetch('https://file.io', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    statusText.innerText = "";
+                    if (data.success && data.link) {
+                        sendToFirebase("VID_URL:" + data.link);
+                    } else {
+                        alert("Video hajmi juda katta yoki xatolik yuz berdi.");
+                    }
+                    input.value = "";
+                })
+                .catch(() => {
+                    statusText.innerText = "";
+                    alert("Video yuklash serverida xatolik bo'ldi.");
+                    input.value = "";
+                });
+            }
         }
 
         window.sendSticker = function(emoji) {
@@ -321,7 +345,7 @@
                 time: Date.now(), 
                 likes: 0, 
                 dislikes: 0,
-                role: isAdmin ? "admin" : "user" // Xabarni kim yozganini bazada saqlash
+                role: isAdmin ? "admin" : "user"
             };
             if (activeReplyId) {
                 msgData.replyTo = activeReplyId;
@@ -346,12 +370,8 @@
         window.likeMsg = function(key, current) { update(ref(db, 'global_chat/' + key), { likes: (current || 0) + 1 }); }
         window.dislikeMsg = function(key, current) { update(ref(db, 'global_chat/' + key), { dislikes: (current || 0) + 1 }); }
 
-        // 🗑️ XABARNI O'CHIRISH (FAQAT ADMINGA RUXSAT)
         window.deleteMsg = function(key, elementId) {
-            if (!isAdmin) {
-                alert("Siz admin emassiz! Xabarlarni o'chira olmaysiz.");
-                return;
-            }
+            if (!isAdmin) return;
             if(confirm("Ushbu xabarni butunlay o'chirib tashlaysizmi?")) {
                 const el = document.getElementById(elementId);
                 if(el) {
@@ -361,7 +381,6 @@
             }
         }
 
-        // 👑 BAZANI TOZALASH (FAQAT ADMINGA RUXSAT)
         window.clearAllMessages = function() {
             if (!isAdmin) return;
             if(confirm("DIQQAT ADMIN: Chatdagi barcha xabarlarni butunlay o'chirib yubormoqchimisiz?")) {
@@ -418,7 +437,6 @@
                     const isMe = (val.sender === currentUsername);
                     const isMsgFromAdmin = (val.role === "admin");
                     
-                    // Klaslarni sozlash
                     let classes = isMe ? 'msg my-msg' : 'msg';
                     if (isMsgFromAdmin) classes += ' admin-msg-style';
                     msgDiv.className = classes;
@@ -429,10 +447,7 @@
                     const likeText = val.likes ? `❤️ ${val.likes}` : '❤️ Like';
                     const dislikeText = val.dislikes ? `👎 ${val.dislikes}` : '👎 Dislike';
                     
-                    // 👑 O'CHIRISH TUGMASI FAQAT ADMIN KORGANIDAGINA HAMMA XABARDA CHIQADI
                     const delMarkup = isAdmin ? `<button class="tool-btn del-btn" onclick="deleteMsg('${key}', '${elementId}')">O'chirish 🗑️</button>` : '';
-
-                    // Ism yoniga [Admin 👑] belgisini qo'shish
                     const nameMarkup = isMsgFromAdmin ? `<span class="admin-badge">${val.sender} [Admin 👑]</span>` : `<span>${val.sender}</span>`;
 
                     let cleanText = "Media kontent";
