@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-X Ultra Chat v10.5</title>
+    <title>Cyber-X Ultra Chat v11.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #010409; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
@@ -44,13 +44,14 @@
         .header-main { display: flex; flex-direction: column; gap: 2px; }
         .status-box { display: flex; align-items: center; gap: 8px; }
         .online-dot { width: 10px; height: 10px; background: #39ff14; border-radius: 50%; box-shadow: 0 0 10px #39ff14; }
+        .typing-status { font-size: 0.85rem; color: #00fbff; font-style: italic; min-height: 18px; display: flex; align-items: center; gap: 5px; }
         .voice-rec-status { color: #ef4444; font-weight: bold; animation: blink 1s infinite; display: none; }
 
         .header-buttons { display: flex; gap: 10px; align-items: center; }
         .bg-menu-btn { background: #1e293b; color: #00fbff; padding: 10px 16px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; border: 1px solid #334155; cursor: pointer; transition: 0.2s; }
         
         /* Fonlar galereyasi */
-        #bg-gallery { display: none; position: absolute; top: 75px; right: 25px; background: rgba(15, 23, 42, 0.95); border: 1px solid #00fbff; padding: 15px; border-radius: 20px; width: 320px; grid-template-columns: repeat(2, 1fr); gap: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); z-index: 20; backdrop-filter: blur(10px); max-height: 400px; overflow-y: auto; }
+        #bg-gallery { display: none; position: absolute; top: 75px; right: 25px; background: rgba(15, 23, 42, 0.95); border: 1px solid #00fbff; padding: 15px; border-radius: 20px; width: 320px; grid-template-columns: repeat(2, 1fr); gap: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); z-index: 20; backdrop-filter: blur(10px); }
         .bg-thumb { height: 80px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; transition: 0.25s ease; position: relative; overflow: hidden; }
         .bg-thumb:hover { border-color: #00fbff; transform: scale(1.04); }
         .bg-thumb span { position: absolute; bottom: 0; left: 0; right: 0; font-size: 0.7rem; background: rgba(0,0,0,0.75); padding: 4px; text-align: center; color: #00fbff; }
@@ -100,7 +101,7 @@
         .send-btn { color: #38bdf8; display: none; }
         #rec-btn.recording { color: #ef4444; animation: voicePulse 1s infinite; }
 
-        @keyframes blink { 50% { opacity: 0.3; } }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes voicePulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); opacity: 0.6; } 100% { transform: scale(1); } }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
@@ -136,7 +137,6 @@
                 <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=600')"><span>BMW M5 Neon</span></div>
                 <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=600')"><span>BMW Dark Sport</span></div>
                 <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=600')"><span>Cyberpunk City</span></div>
-                <div class="bg-thumb" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600');" onclick="setBg('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600')"><span>Gaming Core</span></div>
             </div>
         </div>
         
@@ -168,7 +168,8 @@
             </div>
 
             <div class="telegram-console">
-                <button class="console-btn" onclick="askMediaLink()">📎</button>
+                <input type="file" id="galereya-fayl" accept="image/*,video/*" style="display:none;" onchange="uploadFromGalereya(this)">
+                <button class="console-btn" onclick="document.getElementById('galereya-fayl').click()">📎</button>
                 
                 <textarea id="message-input" rows="1" placeholder="Xabar yozing..." oninput="handleInput(this)"></textarea>
                 
@@ -255,24 +256,44 @@
             }
         }
 
-        /* 📎 INTERNETDAN RASM YOKI VIDEO LINKINI TASHLASH FUNKSIYASI */
-        window.askMediaLink = function() {
-            const url = prompt("Rasm yoki video havolasini (URL) kiriting:\n(Masalan: https://site.com/image.jpg yoki .mp4)");
-            if (!url) return;
+        /* 📎 GALEREYADAN TANLANGAN RASM YOKI VIDEONI SERVERGA YUKLASH FUNKSIYASI */
+        window.uploadFromGalereya = function(input) {
+            const file = input.files[0];
+            if (!file) return;
 
-            if (url.match(/\.(jpeg|jpg|gif|png|webp)/i) != null) {
-                sendToFirebase("IMG_URL:" + url);
-            } else if (url.match(/\.(mp4|webm|ogg)/i) != null) {
-                sendToFirebase("VID_URL:" + url);
-            } else {
-                // Agar format noma'lum bo'lsa, foydalanuvchidan so'rash
-                const ketti = confirm("Bu rasmmi? (Rasm bo'lsa OK, video bo'lsa Cancel bosing)");
-                if (ketti) sendToFirebase("IMG_URL:" + url);
-                else sendToFirebase("VID_URL:" + url);
-            }
+            // Chatda yuklanyapti degan vizual status ko'rsatish
+            document.getElementById('typing-txt').innerText = "Fayl yuklanmoqda, iltimos kuting...";
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'ml_default'); // Global tekin va tezkor yuklash tizimi
+
+            // Faylni vaqtinchalik saqlash va to'g'ridan-to'g'ri havola (URL) olish uchun Cloudinary API ishlatamiz
+            fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('typing-txt').innerText = "";
+                if (data.secure_url) {
+                    if (file.type.startsWith('image/')) {
+                        sendToFirebase("IMG_URL:" + data.secure_url);
+                    } else if (file.type.startsWith('video/')) {
+                        sendToFirebase("VID_URL:" + data.secure_url);
+                    }
+                } else {
+                    alert("Fayl yuklashda xatolik bo'ldi.");
+                }
+                input.value = ""; // Inputni tozalash
+            })
+            .catch(err => {
+                document.getElementById('typing-txt').innerText = "";
+                alert("Server bilan aloqa uzildi. Internetni tekshiring.");
+                input.value = "";
+            });
         }
 
-        /* 😊 STIKER (EMOJI) YUBORISH */
         window.sendSticker = function(emoji) {
             sendToFirebase("STIKER_EMOJI:" + emoji);
             toggleStickers();
@@ -291,13 +312,12 @@
         window.setReply = function(key, sender, text) {
             activeReplyId = key;
             activeReplyText = text.substring(0, 25) + (text.length > 25 ? "..." : "");
-            document.getElementById('reply-preview-text').innerText = `Reply to ${sender}: ${activeReplyText}`;
             document.getElementById('reply-preview-bar').style.display = 'flex';
+            document.getElementById('reply-preview-text').innerText = `Reply to ${sender}: ${activeReplyText}`;
         }
 
         window.cancelReply = function() {
-            activeReplyId = null;
-            activeReplyText = "";
+            activeReplyId = null; activeReplyText = "";
             document.getElementById('reply-preview-bar').style.display = 'none';
         }
 
@@ -347,7 +367,6 @@
             }
         }
 
-        /* 🛠️ CHAT FORMATLASH ESKI KODLAR BILAN TO'QNASHMAYDI */
         function formatMessage(text) {
             if (text.startsWith('TEXT:')) {
                 return text.replace('TEXT:', '').replace(/\n/g, '<br>');
